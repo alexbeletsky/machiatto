@@ -2,6 +2,14 @@
 
 Behaviour driven test framework.
 
+## Features
+
+* Context re-use between tests and files
+* Better structure for same context tests
+* Sync and async code testing
+* Browser and node.js
+* Simple to use
+
 ## Usage
 
 Install `machiatto` as npm package,
@@ -14,43 +22,38 @@ Create `helloworld.spec.js` file,
 
 ```js
 var behavior = require('machiatto');
+var hello = behaviour('hello');
 
-behaviour('world behavior')
-	.prepare(function(context) {
+hello
+	.when('world is created', function (context) {
 		context.world = new World();
 	})
-	.perform(function (context) {
-		context.result = context.world.say();
+	.and('greet', function (context) {
+		context.result = context.world.greet();
 	})
-	.expect(function (context) {
-		context.result.to.equal('hello');
-	})
-```
-
-### Context less tests
-
-Context-less tests are ones that don't require `.prepare()` function.
-
-```js
-var behavior = require('machiatto');
-var calculator = require('calculator');
-
-behavior('calc behaviour')
-	.perform('when add two numbers', function (context) {
-		context.result = calculator.add(4, 6);
-	})
-	expect('should return sum', function (context, expect) {
-		expect.result.to.equal(10);
+	.should('respond hello', function (context, expect) {
+		expect(context.result).to.equal('hello');
 	});
 ```
 
-### Context based tests
-
-Context bases tests `.prepare()` function should prepare all tests dependencies.
+Then in `byeworld.spec.js` file,
 
 ```js
+var behavior = require('machiatto');
+var hello = behaviour('hello');
+
+hello
+	.when('world is created')	// -> context is re-used from test above
+	.and('bye', function (context) {
+		context.result = context.world.bye();
+	})
+	.should('respond bye', function (context, expect) {
+		expect(context.result).to.equal('bye-bye');
+	});
 
 ```
+
+See [examples.js](/examples.js).
 
 # License
 
