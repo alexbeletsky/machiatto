@@ -1,0 +1,27 @@
+{
+  "name": "machiatto",
+  "version": "0.0.1",
+  "description": "Behavior driven test framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/alexanderbeletsky/machiatto.git"
+  },
+  "keywords": [
+    "tdd",
+    "bdd",
+    "behaviour",
+    "test",
+    "browser",
+    "nodejs"
+  ],
+  "author": "alexander.beletsky@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alexanderbeletsky/machiatto/issues"
+  },
+  "homepage": "https://github.com/alexanderbeletsky/machiatto"
+}
