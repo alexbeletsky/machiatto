@@ -25,13 +25,13 @@ var behavior = require('machiatto');
 var hello = behaviour('hello');
 
 hello
-	.when('world is created', function (context) {
+	.given('world is created', function (context) {
 		context.world = new World();
 	})
-	.and('greet', function (context) {
+	.when('greet', function (context) {
 		context.result = context.world.greet();
 	})
-	.should('respond hello', function (context, expect) {
+	.then('respond hello', function (context, expect) {
 		expect(context.result).to.equal('hello');
 	});
 ```
@@ -43,17 +43,17 @@ var behavior = require('machiatto');
 var hello = behaviour('hello');
 
 hello
-	.when('world is created')	// -> context is re-used from test above
-	.and('bye', function (context) {
+	.given('world is created')	// -> context is re-used from test above
+	.when('bye', function (context) {
 		context.result = context.world.bye();
 	})
-	.should('respond bye', function (context, expect) {
+	.then('respond bye', function (context, expect) {
 		expect(context.result).to.equal('bye-bye');
 	});
 
 ```
 
-See [examples.js](/examples.js).
+See [/examples](/examples/examples.js).
 
 # License
 
