@@ -38,12 +38,12 @@ function machiatto(spec) {
 	}
 
 	function apply(f, fn) {
-		fn(context, f === 'it' ? expect(context.results) : done);
+		fn(context, f === 'then' ? expect(context.result) : done);
 	}
 
 	var _machiatto = {};
 
-	['given', 'when', 'it'].forEach(function (f) {
+	['given', 'when', 'then'].forEach(function (f) {
 		_machiatto[f] = function (name, fn) {
 			apply(f, reusable(name, fn));
 			return _machiatto;

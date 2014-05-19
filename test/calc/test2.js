@@ -10,11 +10,11 @@ spec
 	})
 	.when('add')
 
-	.it('should return sum', function (context, expect) {
+	.then('should return sum', function (context, expect) {
 		expect().equal(8);
 	})
 
-	.it('should return sum 2', function (context, expect) {
+	.then('should return sum 2', function (context, expect) {
 		expect().equal(0);
 	});
 
@@ -22,7 +22,7 @@ spec
 
 spec.
 	when('mul', function (context) {
-		context.results = calc.mul(context.a, context.b);
+		context.result = calc.mul(context.a, context.b);
 	});
 
 spec
@@ -30,7 +30,7 @@ spec
 
 	.when('mul')
 
-	.it('should multiply', function (context, expect) {
+	.then('should multiply', function (context, expect) {
 		expect().equal(16);
 	});
 

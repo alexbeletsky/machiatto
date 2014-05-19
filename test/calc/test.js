@@ -4,7 +4,7 @@ var calc = require('./calc.js');
 
 spec.
 	when('add', function (context) {
-		context.results = calc.add(context.a, context.b);
+		context.result = calc.add(context.a, context.b);
 	});
 
 spec
@@ -15,7 +15,8 @@ spec
 
 	.when('add')
 
-	.it('should return sum', function (context, expect) {
+	// calc spec - given two numbers when add then should return their sum
+	.then('should return sum', function (context, expect) {
 		expect().equal(4);
 	});
 
@@ -27,7 +28,7 @@ spec.
 
 	.when('add')
 
-	.it('should return sum', function (context, expect) {
+	.then('should return sum', function (context, expect) {
 		expect().equal(6);
 	});
 
