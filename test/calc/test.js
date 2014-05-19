@@ -1,4 +1,4 @@
-var machiatto = require('../source/machiatto');
+var machiatto = require('../../source/machiatto');
 var spec = machiatto('calc spec');
 var calc = require('./calc.js');
 
@@ -12,8 +12,10 @@ spec
 		context.a = 2;
 		context.b = 2;
 	})
+
 	.when('add')
-	.it('should return sum', function (expect) {
+
+	.it('should return sum', function (context, expect) {
 		expect().equal(4);
 	});
 
@@ -22,8 +24,10 @@ spec.
 		context.a = 3;
 		context.b = 3;
 	})
+
 	.when('add')
-	.it('should return sum', function (expect) {
+
+	.it('should return sum', function (context, expect) {
 		expect().equal(6);
 	});
 

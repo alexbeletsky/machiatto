@@ -19,42 +19,38 @@ function expect(expected) {
 function machiatto(spec) {
 	var context = { _func: {} };
 
-	return {
-		given: function (name, fn) {
-			if (fn) {
-				context._func[name] = fn;
-			} else {
-				fn = context._func[name];
-			}
-
-			if (!fn) {
-				throw new Error('no function');
-			}
-
-			fn(context);
-			return this;
-		},
-
-		when: function (name, fn) {
-			if (fn) {
-				context._func[name] = fn;
-			} else {
-				fn = context._func[name];
-			}
-
-			if (!fn) {
-				throw new Error('no function');
-			}
-
-			fn(context);
-			return this;
-		},
-
-		it: function (name, fn) {
-			fn(expect(context.results));
-			return this;
+	function reusable(name, fn) {
+		if (fn) {
+			context._func[name] = fn;
+		} else {
+			fn = context._func[name];
 		}
-	};
+
+		if (!fn) {
+			throw new Error('no function');
+		}
+
+		return fn;
+	}
+
+	function done() {
+
+	}
+
+	function apply(f, fn) {
+		fn(context, f === 'it' ? expect(context.results) : done);
+	}
+
+	var _machiatto = {};
+
+	['given', 'when', 'it'].forEach(function (f) {
+		_machiatto[f] = function (name, fn) {
+			apply(f, reusable(name, fn));
+			return _machiatto;
+		};
+	});
+
+	return _machiatto;
 }
 
 module.exports = machiatto;
