@@ -12,6 +12,10 @@ spec
 
 	.it('should return sum', function (context, expect) {
 		expect().equal(8);
+	})
+
+	.it('should return sum 2', function (context, expect) {
+		expect().equal(0);
 	});
 
 // start new context here
