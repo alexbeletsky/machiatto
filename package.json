@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/alexanderbeletsky/machiatto/issues"
   },
-  "homepage": "https://github.com/alexanderbeletsky/machiatto"
+  "homepage": "https://github.com/alexanderbeletsky/machiatto",
+  "dependencies": {
+    "diff": "~1.0.8"
+  }
 }
