@@ -2,27 +2,47 @@ var EventEmitter = require('events').EventEmitter;
 var Reporter = require('./reporters/dot');
 
 function expect(runner, context) {
-	function assert(con, message) {
+	function assert(condition, message) {
 		var test = {
 			slow: function () {
 				return 100;
+			},
+
+			fullTitle: function () {
+				return 'full title';
 			}
 		};
 
-		if (!con) {
-			runner.emit('fail', test);
+		if (!condition) {
+			runner.emit('fail', test, new Error('message'));
 		} else {
 			runner.emit('pass', test);
 		}
 
-		runner.emit('test end');
+		runner.emit('test end', test);
+	}
+
+	function evaluate() {
+		var givens = context._spec.given;
+		givens.forEach(function (g) {
+			g(context);
+		});
+
+		var whens = context._spec.when;
+		whens.forEach(function (w) {
+			w(context);
+		});
+
+		return context.result;
 	}
 
 	return function (provided) {
-		var expected = context.result || provided;
+		var actual = evaluate() || provided;
+
+		console.log(actual);
 
 		return {
-			equal: function (actual) {
+			equal: function (expected) {
 				assert(expected === actual, 'expected: ' + expected + ' actual: ' + actual);
 			}
 		};
@@ -35,7 +55,7 @@ function reporter(runner) {
 
 function machiatto(spec) {
 	var runner = new EventEmitter();
-	var context = { _func: {} };
+	var context = { _func: {}, _spec: {name: spec} };
 
 	reporter(runner);
 
@@ -53,21 +73,27 @@ function machiatto(spec) {
 		return fn;
 	}
 
-	function done() {
-
+	function addToContext(context, name, fn) {
+		var s = context._spec[name] = context._spec[name] || [];
+		s.push(fn);
 	}
 
-	function apply(f, fn) {
-		fn(context, f === 'then' ? expect(runner, context) : done);
-	}
+	var _machiatto = {
+		run: function () {
+			runner.emit('start');
 
-	var _machiatto = {};
+			var thens = context._spec.then;
+			thens.forEach(function (t) {
+				t(context, expect(runner, context));
+			});
 
-	runner.emit('start');
+			runner.emit('end');
+		}
+	};
 
 	['given', 'when', 'then'].forEach(function (f) {
 		_machiatto[f] = function (name, fn) {
-			apply(f, reusable(name, fn));
+			addToContext(context, f, reusable(name, fn));
 			return _machiatto;
 		};
 	});

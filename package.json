@@ -4,7 +4,7 @@
   "description": "Behavior driven test framework",
   "main": "index.js",
   "scripts": {
-    "test": "node test/calc/test2.js"
+    "test": "node test/calc/test.js"
   },
   "repository": {
     "type": "git",

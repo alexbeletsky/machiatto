@@ -32,4 +32,6 @@ spec.
 		expect().equal(6);
 	});
 
+spec.run();
+
 module.exports = spec;
