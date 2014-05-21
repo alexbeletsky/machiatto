@@ -7,7 +7,6 @@
 		"beforeEach",
 		"chai",
 		"describe",
-		"expect",
 		"iit",
 		"it",
 		"runs",

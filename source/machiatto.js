@@ -1,102 +1,84 @@
 var EventEmitter = require('events').EventEmitter;
 var Reporter = require('./reporters/dot');
 
-function expect(runner, context) {
-	function assert(condition, message) {
-		var test = {
-			slow: function () {
-				return 100;
-			},
-
-			fullTitle: function () {
-				return 'full title';
-			}
-		};
-
-		if (!condition) {
-			runner.emit('fail', test, new Error('message'));
-		} else {
-			runner.emit('pass', test);
-		}
-
-		runner.emit('test end', test);
+function run(context, should, runner, test) {
+	try {
+		should(context);
+	} catch (err) {
+		return fail(err);
 	}
 
-	function evaluate() {
-		var givens = context._spec.given;
-		givens.forEach(function (g) {
-			g(context);
-		});
+	return pass();
 
-		var whens = context._spec.when;
-		whens.forEach(function (w) {
-			w(context);
-		});
-
-		return context.result;
+	function pass() {
+		runner.emit('pass', test);
 	}
 
-	return function (provided) {
-		var actual = evaluate() || provided;
+	function fail(err) {
+		runner.emit('fail', test, err);
+	}
+}
 
-		console.log(actual);
-
-		return {
-			equal: function (expected) {
-				assert(expected === actual, 'expected: ' + expected + ' actual: ' + actual);
-			}
-		};
+function machiatto(specName) {
+	var _ = {
+		name: specName,
+		whens: [],
+		ands: [],
+		shoulds: []
 	};
-}
 
-function reporter(runner) {
-	return new Reporter(runner);
-}
+	function prepareContext() {
+		var context = {};
 
-function machiatto(spec) {
-	var runner = new EventEmitter();
-	var context = { _func: {}, _spec: {name: spec} };
+		_.whens.forEach(function (when) {
+			when(context);
+		});
 
-	reporter(runner);
-
-	function reusable(name, fn) {
-		if (fn) {
-			context._func[name] = fn;
-		} else {
-			fn = context._func[name];
-		}
-
-		if (!fn) {
-			throw new Error('no function');
-		}
-
-		return fn;
-	}
-
-	function addToContext(context, name, fn) {
-		var s = context._spec[name] = context._spec[name] || [];
-		s.push(fn);
+		return context;
 	}
 
 	var _machiatto = {
+		when: function (desc, fn) {
+			fn && _.whens.push(fn);
+			return this;
+		},
+
+		and: function (desc, fn) {
+			fn && _.whens.push(fn);
+			return this;
+		},
+
+		should: function (desc, fn) {
+			fn && _.shoulds.push(fn);
+			return this;
+		},
+
 		run: function () {
+			var runner = new EventEmitter();
+			var reporter = new Reporter(runner);
+
 			runner.emit('start');
 
-			var thens = context._spec.then;
-			thens.forEach(function (t) {
-				t(context, expect(runner, context));
+			_.shoulds.forEach(function (should) {
+				var context = prepareContext();
+				var test = {
+					slow: function () {
+						return 100;
+					},
+
+					fullTitle: function () {
+						// TODO: fixme
+						return specName;
+					}
+				};
+
+				run(context, should, runner, test);
+				runner.emit('test end');
 			});
 
 			runner.emit('end');
 		}
 	};
-
-	['given', 'when', 'then'].forEach(function (f) {
-		_machiatto[f] = function (name, fn) {
-			addToContext(context, f, reusable(name, fn));
-			return _machiatto;
-		};
-	});
 
 	return _machiatto;
 }

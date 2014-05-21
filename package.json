@@ -4,7 +4,7 @@
   "description": "Behavior driven test framework",
   "main": "index.js",
   "scripts": {
-    "test": "node test/calc/test.js"
+    "test": "node test/hypos.js"
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,8 @@
   "homepage": "https://github.com/alexanderbeletsky/machiatto",
   "dependencies": {
     "diff": "~1.0.8"
+  },
+  "devDependencies": {
+    "expect.js": "~0.3.1"
   }
 }
