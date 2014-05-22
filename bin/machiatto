@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var path = require('path');
+
+var program = require('commander');
+var glob = require('glob');
+
+program
+  .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version);
+
+program.name = 'machiatto';
+
+program.parse(process.argv);
+
+glob('./test/*.js', function (err, files) {
+	if (err) {
+		throw err;
+	}
+
+	files.forEach(function (f) {
+		var spec = require(path.resolve(f));
+		spec.run();
+	});
+});
+

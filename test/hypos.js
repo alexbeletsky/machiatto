@@ -20,4 +20,4 @@ spec
 		expect(context.b).to.equal(3);
 	});
 
-spec.run();
+module.exports = spec;
