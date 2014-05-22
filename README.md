@@ -25,13 +25,13 @@ var behavior = require('machiatto');
 var hello = behaviour('hello');
 
 hello
-	.given('world is created', function (context) {
+	.when('world is created', function (context) {
 		context.world = new World();
 	})
-	.when('greet', function (context) {
+	.and('greet', function (context) {
 		context.result = context.world.greet();
 	})
-	.then('respond hello', function (context, expect) {
+	.should('respond hello', function (context, expect) {
 		expect(context.result).to.equal('hello');
 	});
 ```
@@ -43,11 +43,11 @@ var behavior = require('machiatto');
 var hello = behaviour('hello');
 
 hello
-	.given('world is created')	// -> context is re-used from test above
-	.when('bye', function (context) {
+	.when('world is created')
+	.and('bye', function (context) {
 		context.result = context.world.bye();
 	})
-	.then('respond bye', function (context, expect) {
+	.should('respond bye', function (context, expect) {
 		expect(context.result).to.equal('bye-bye');
 	});
 
