@@ -23,4 +23,3 @@ glob('./test/*.js', function (err, files) {
 		spec.run();
 	});
 });
-
