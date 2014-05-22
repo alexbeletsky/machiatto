@@ -2,6 +2,8 @@
 
 var fs = require('fs');
 var path = require('path');
+var EventEmitter = require('events').EventEmitter;
+var Reporter = require('../source/reporters/dot');
 
 var program = require('commander');
 var glob = require('glob');
@@ -13,6 +15,9 @@ program.name = 'machiatto';
 
 program.parse(process.argv);
 
+var runner = new EventEmitter();
+var reporter = new Reporter(runner);
+
 glob('./test/*.spec.js', function (err, files) {
 	if (err) {
 		throw err;
@@ -20,6 +25,6 @@ glob('./test/*.spec.js', function (err, files) {
 
 	files.forEach(function (f) {
 		var spec = require(path.resolve(f));
-		spec.run();
+		spec.run(runner, reporter);
 	});
 });
