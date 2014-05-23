@@ -1,5 +1,16 @@
-var Test = require('./test');
 var tree = require('./tree');
+
+function test(name, spec) {
+	return {
+		slow: function () {
+			return 100;
+		},
+
+		fullTitle: function () {
+			return spec + ' - ' + name;
+		}
+	};
+}
 
 function prepare(path) {
 	var context = {};
@@ -78,7 +89,7 @@ function context(name) {
 				var path = assert.path({includeSelf: false});
 				var context = prepare(path);
 
-				run(context, assert.model.fn, runner, new Test(assert.name, specName));
+				run(context, assert.model.fn, runner, test(assert.name, specName));
 
 				runner.emit('test end');
 			});
