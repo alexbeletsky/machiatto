@@ -1,11 +1,13 @@
 var util = require('util');
 var Test = require('./test');
+var tree = require('./tree');
 
 function Context(specName) {
 	this.specName = specName;
 	this.arranges = [];
 	this.asserts = [];
-	this.path = [];
+	this.root = tree();
+	this.curr = null;
 }
 
 Context.prototype.lookup = function (name) {
@@ -17,38 +19,43 @@ Context.prototype.lookup = function (name) {
 };
 
 Context.prototype.establish = function (name, fn) {
-	this.arrange(name, fn);
+	this.curr = this.root.add({name: name, fn: fn});
+
+	return this;
 };
 
 Context.prototype.arrange = function (name, fn) {
-	var exists = this.lookup(name);
-	if (!exists) {
-		this.arranges.push({name: name, fn: fn});
+	if (!this.curr) {
+		throw new Error('context in not established, make sure `.when()` is called before');
 	}
 
-	this.path.push(name);
+	this.curr = this.curr.add({name: name, fn: fn});
+
+	return this;
 };
 
 Context.prototype.assert = function (name, fn) {
-	this.asserts.push({name: name, fn: fn, path: this.path});
+	var assert = this.curr.add({name: name, fn: fn});
+	this.asserts.push(assert);
+
+	return this;
 };
 
 Context.prototype.run = function (runner) {
-	var me = this;
 	var specName = this.specName;
-
-	console.log('run', util.inspect(this.path, {depth: 4}));
 
 	runner.emit('start');
 
 	this.asserts.forEach(function (assert) {
 		var context = {};
+		var path = assert.path({includeSelf: false});
 
-		assert.path.forEach(function (name) {
-			me.lookup(name)(context);
+		path.forEach(function (node) {
+			var fn = node.model && node.model.fn;
+			fn && fn(context);
 		});
 
-		run(context, assert.fn, runner, new Test(assert.name, specName));
+		run(context, assert.model.fn, runner, new Test(assert.name, specName));
 		runner.emit('test end');
 	});
 
