@@ -1,7 +1,7 @@
-var Context = require('./context');
+var context = require('./context');
 
 function machiatto(specName) {
-	var _ = new Context(specName);
+	var _ = context(specName);
 
 	var _machiatto = {
 		when: function (desc, fn) {
