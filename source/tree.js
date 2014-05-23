@@ -23,13 +23,15 @@ function node(parent, model) {
 			var parent = this.parent;
 
 			while(true) {
-				if (parent) {
-					path.push(parent);
-					parent = parent.parent;
-				} else {
-					return path.reverse();
+				if (!parent) {
+					break;
 				}
+
+				path.push(parent);
+				parent = parent.parent;
 			}
+
+			return path.reverse();
 		}
 	};
 }
@@ -40,16 +42,3 @@ function tree(model) {
 }
 
 module.exports = tree;
-
-
-// var t = tree();
-
-// var when = t.add({type: 'when', name: 'initialize', fn: function () { console.log('initializing');} });
-// when = when.add({type: 'and', name: 'two numbers', fn: function () { console.log('adding numbers'); } });
-// var should = when.add({type: 'should', name: 'return sum', fn: function () { console.log('asserting'); }});
-
-// var path = should.path();
-
-// path.forEach(function (node) {
-// 	node.model.fn();
-// });

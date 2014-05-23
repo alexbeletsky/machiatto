@@ -12,18 +12,20 @@ function test(name, spec) {
 	};
 }
 
-function prepare(path) {
-	var context = {};
+function prepareContext(path) {
+	var empty = {};
 
-	path.forEach(function (node) {
+	path.forEach(runPathFunction);
+
+	function runPathFunction(node) {
 		var fn = node.model && node.model.fn;
-		fn && fn(context);
-	});
+		fn && fn(empty);
+	}
 
-	return context;
+	return empty;
 }
 
-function run(context, should, runner, test) {
+function runAssert(context, should, runner, test) {
 	try {
 		should(context);
 	} catch (err) {
@@ -85,16 +87,18 @@ function context(name) {
 		run: function (runner) {
 			runner.emit('start');
 
-			asserts.forEach(function (assert) {
-				var path = assert.path({includeSelf: false});
-				var context = prepare(path);
-
-				run(context, assert.model.fn, runner, test(assert.name, specName));
-
-				runner.emit('test end');
-			});
+			asserts.forEach(executeAssert);
 
 			runner.emit('end');
+
+			function executeAssert(assert) {
+				var path = assert.path({includeSelf: false});
+				var context = prepareContext(path);
+
+				runAssert(context, assert.model.fn, runner, test(assert.name, specName));
+
+				runner.emit('test end');
+			}
 		}
 	};
 }
