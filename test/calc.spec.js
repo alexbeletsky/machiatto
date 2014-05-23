@@ -16,35 +16,24 @@ spec
 
 	.should('calculate sum', function (context) {
 		expect(context.result).to.equal(3);
+	})
+
+	.should('calculate sum 2', function (context) {
+		expect(context.result).to.equal(3);
 	});
 
-// spec.
-// 	when('add', function (context) {
-// 		context.result = calc.add(context.a, context.b);
-// 	});
+spec
+	.when('given another numbers', function (context) {
+		context.a = 3;
+		context.b = 4;
+	})
 
-// spec
-// 	.when('two numbers', function (context) {
-// 		context.a = 2;
-// 		context.b = 2;
-// 	})
+	.and('add operation', function (context) {
+		context.result = calc.add(context.a, context.b);
+	})
 
-// 	.and('add')
-
-// 	.should('return sum', function (context) {
-// 		expect(context.result).equal(4);
-// 	});
-
-// spec.
-// 	when('two numbers', function (context) {
-// 		context.a = 3;
-// 		context.b = 3;
-// 	})
-
-// 	.and('add')
-
-// 	.should('return sum', function (context, expect) {
-// 		expect(context.result).equal(6);
-// 	});
+	.should('calculate sum', function (context) {
+		expect(context.result).to.equal(7);
+	});
 
 module.exports = spec;
