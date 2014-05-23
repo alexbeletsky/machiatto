@@ -1,25 +1,27 @@
-var util = require('util');
 var Test = require('./test');
 var tree = require('./tree');
 
 function Context(specName) {
 	this.specName = specName;
-	this.arranges = [];
+	this.arranges = {};
 	this.asserts = [];
 	this.root = tree();
 	this.curr = null;
 }
 
 Context.prototype.lookup = function (name) {
-	var filtered = this.arranges.filter(function (a) {
-		return a.name === name;
-	})[0];
-
-	return filtered && filtered.fn;
+	return this.arranges[name];
 };
 
 Context.prototype.establish = function (name, fn) {
+	fn = fn || this.lookup(name);
+
+	if (!fn) {
+		throw new Error('missing function for ' + name);
+	}
+
 	this.curr = this.root.add({name: name, fn: fn});
+	this.arranges[name] = fn;
 
 	return this;
 };
@@ -29,7 +31,14 @@ Context.prototype.arrange = function (name, fn) {
 		throw new Error('context in not established, make sure `.when()` is called before');
 	}
 
+	fn = fn || this.lookup(name);
+
+	if (!fn) {
+		throw new Error('missing function for ' + name);
+	}
+
 	this.curr = this.curr.add({name: name, fn: fn});
+	this.arranges[name] = fn;
 
 	return this;
 };

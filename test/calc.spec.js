@@ -36,4 +36,17 @@ spec
 		expect(context.result).to.equal(7);
 	});
 
+spec
+	.when('given another numbers', function (context) {
+		context.a = 5;
+		context.b = 6;
+	})
+
+	.and('add operation')
+
+	.should('calculate sum', function (context) {
+		expect(context.result).to.equal(11);
+	});
+
+
 module.exports = spec;

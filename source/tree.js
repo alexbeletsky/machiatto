@@ -2,10 +2,14 @@ function node(parent, model) {
 	return {
 		parent: parent,
 
+		children: [],
+
 		model: model,
 
 		add: function (model) {
 			var added = node(this, model);
+			this.children.push(added);
+
 			return added;
 		},
 
@@ -18,7 +22,7 @@ function node(parent, model) {
 
 			var parent = this.parent;
 
-			while (true) {
+			while(true) {
 				if (parent) {
 					path.push(parent);
 					parent = parent.parent;
