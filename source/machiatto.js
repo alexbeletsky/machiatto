@@ -19,6 +19,11 @@ function machiatto(specName) {
 			return this;
 		},
 
+		skip: function () {
+			_.skip();
+			return this;
+		},
+
 		run: function (runner) {
 			_.run(runner);
 		}

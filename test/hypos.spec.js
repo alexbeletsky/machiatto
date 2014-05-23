@@ -20,4 +20,24 @@ spec
 		expect(context.b).to.equal(2);
 	});
 
+spec
+	.when('setup context', function (context) {
+		context.a = 3;
+	})
+
+	.and('additional setup context', function (context) {
+		context.b = 4;
+	})
+
+	.should('initalize context.a', function (context) {
+		expect(context.a).to.equal(3);
+	})
+
+	.should('initalize context.b', function (context) {
+		expect(context.b).to.equal(4);
+	})
+
+	.skip();
+
+
 module.exports = spec;

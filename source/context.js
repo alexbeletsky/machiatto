@@ -41,6 +41,7 @@ function context(name) {
 	var asserts = [];
 	var root = tree();
 	var curr = null;
+	var skipped = false;
 
 	return {
 		lookup: function (name) {
@@ -84,8 +85,17 @@ function context(name) {
 			return this;
 		},
 
+		skip: function () {
+			skipped = true;
+		},
+
 		run: function (runner) {
 			runner.emit('start');
+
+			if (skipped) {
+				runner.emit('pending');
+				return runner.emit('end');
+			}
 
 			asserts.forEach(executeAssert);
 
