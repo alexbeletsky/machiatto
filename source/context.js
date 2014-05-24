@@ -11,6 +11,8 @@ function debug(path) {
 
 function test(name, spec) {
 	return {
+		title: name,
+
 		slow: function () {
 			return 100;
 		},
@@ -38,7 +40,7 @@ function runAssert(context, assert, runner, test, noop) {
 	assert.run = true;
 
 	if (assert.model.fn === noop) {
-		return runner.emit('pending');
+		return runner.emit('pending', test);
 	}
 
 	try {
@@ -109,18 +111,26 @@ function context(spec, suite, noop) {
 		},
 
 		run: function (runner) {
-			asserts.forEach(executeAssert);
+			var executed = asserts.some(function (assert) {
+				return assert.run;
+			});
+
+			if (!executed && asserts.length > 0) {
+				runner.emit('suite', {title: suite});
+
+				asserts.forEach(executeAssert);
+
+				runner.emit('suite end');
+			}
 
 			function executeAssert(assert) {
-				if (!assert.run) {
-					var path = assert.path({includeSelf: false});
-					var context = prepareContext(path);
+				var path = assert.path({includeSelf: false});
+				var context = prepareContext(path);
 
-					//console.log(util.inspect(debug(path), {depth: 5}));
-					runAssert(context, assert, runner, test(assert.name, spec), noop);
+				//console.log(util.inspect(debug(path), {depth: 5}));
+				runAssert(context, assert, runner, test(assert.model.name, spec), noop);
 
-					runner.emit('test end');
-				}
+				runner.emit('test end');
 			}
 		}
 	};

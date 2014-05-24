@@ -3,7 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var EventEmitter = require('events').EventEmitter;
-var Reporter = require('../source/reporters/dot');
+var Reporter = require('../source/reporters/spec');
 
 var program = require('commander');
 var glob = require('glob');
@@ -23,10 +23,11 @@ glob('./test/*.spec.js', function (err, files) {
 		throw err;
 	}
 
-	runner.emit('start');
 
 	files.forEach(function (f) {
 		var spec = require(path.resolve(f));
+
+		runner.emit('start');
 		spec.run(runner, reporter);
 	});
 
