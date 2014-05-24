@@ -51,44 +51,41 @@ function runAssert(context, assert, runner, test, noop) {
 }
 
 function context(spec, suite, noop) {
-	var arranges = {};
 	var asserts = [];
-	var root = tree({name: spec + ' root ' + suite});
-
+	var root = tree();
 	var curr = null;
-	var skipped = false;
 
 	var cache = roots[spec] = roots[spec] || [];
 	cache.push(root);
 
 	return {
 		lookup: function (name) {
-			var found;
+			var pred = function (node) {
+				return node.model && node.model.name === name && node.model.fn !== noop;
+			};
 
 			for(var i = 0; i < roots[spec].length; i++) {
-				found = roots[spec][i].find(pred);
+				var found = roots[spec][i].find(pred);
 
 				if (found) {
-					break;
+					return found.model.fn;
 				}
-			}
-
-			return found && found.model.fn;
-
-			function pred(node) {
-				return node.model && node.model.name === name && node.model.fn !== noop;
 			}
 		},
 
-		establish: function (name, fn) {
+		reusable: function (name, fn) {
 			fn = fn || this.lookup(name);
 
 			if (!fn) {
 				throw new Error('missing function for ' + name);
 			}
 
+			return fn;
+		},
+
+		establish: function (name, fn) {
+			fn = this.reusable(name, fn);
 			curr = root.add({name: name, fn: fn});
-			arranges[name] = fn;
 
 			return this;
 		},
@@ -98,14 +95,8 @@ function context(spec, suite, noop) {
 				throw new Error('context in not established, make sure `.when()` is called before');
 			}
 
-			fn = fn || this.lookup(name);
-
-			if (!fn) {
-				throw new Error('missing function for ' + name);
-			}
-
+			fn = this.reusable(name, fn);
 			curr = curr.add({name: name, fn: fn});
-			arranges[name] = fn;
 
 			return this;
 		},

@@ -39,22 +39,15 @@ function node(parent, model) {
 				return this;
 			}
 
-			var found = deep(this.children);
-			if (found) {
-				return found;
-			}
+			return deep(this.children);
 
 			function deep(children) {
-				var found;
-
 				for(var i = 0; i < children.length; i++) {
-					found = children[i].find(pred);
+					var found = children[i].find(pred);
 					if (found) {
-						break;
+						return found;
 					}
 				}
-
-				return found;
 			}
 		}
 	};
