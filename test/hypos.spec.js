@@ -35,9 +35,6 @@ spec
 
 	.should('initalize context.b', function (context) {
 		expect(context.b).to.equal(4);
-	})
-
-	.skip();
-
+	});
 
 module.exports = spec;

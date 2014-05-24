@@ -25,9 +25,11 @@ function prepareContext(path) {
 	return empty;
 }
 
-function runAssert(context, should, runner, test) {
+function runAssert(context, assert, runner, test) {
+	assert.run = true;
+
 	try {
-		should(context);
+		assert.model.fn(context);
 	} catch (err) {
 		return runner.emit('fail', test, err);
 	}
@@ -90,24 +92,22 @@ function context(name) {
 		},
 
 		run: function (runner) {
-			runner.emit('start');
-
 			if (skipped) {
 				runner.emit('pending');
-				return runner.emit('end');
+				return;
 			}
 
 			asserts.forEach(executeAssert);
 
-			runner.emit('end');
-
 			function executeAssert(assert) {
-				var path = assert.path({includeSelf: false});
-				var context = prepareContext(path);
+				if (!assert.run) {
+					var path = assert.path({includeSelf: false});
+					var context = prepareContext(path);
 
-				runAssert(context, assert.model.fn, runner, test(assert.name, specName));
+					runAssert(context, assert, runner, test(assert.name, specName));
 
-				runner.emit('test end');
+					runner.emit('test end');
+				}
 			}
 		}
 	};
