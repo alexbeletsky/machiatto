@@ -58,6 +58,8 @@ spec
 	.and('add operation')
 
 	.should('calculate sum', function (context) {
+		console.log(context);
+
 		expect(context.result).to.equal(1);
 	});
 
