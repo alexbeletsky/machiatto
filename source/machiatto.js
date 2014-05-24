@@ -1,40 +1,56 @@
 var context = require('./context');
 
-function ret(v) { return function () { return v; }; }
+function noop() {}
 
 function machiatto(specName) {
-	var _ = context(specName);
+	var specs = [];
 
-	var _machiatto = {
-		when: function (desc, fn) {
-			_.establish(desc, fn);
-			return this;
-		},
+	var _machiatto = function (suiteName) {
+		var _ = context(specName, suiteName, noop);
 
-		and: function (desc, fn) {
-			_.arrange(desc, fn);
-			return this;
-		},
+		var spec = {
+			when: function (desc, fn) {
+				_.establish(desc, fn);
+				return this;
+			},
 
-		should: function (desc, fn) {
-			_.assert(desc, fn);
-			return this;
-		},
+			and: function (desc, fn) {
+				_.arrange(desc, fn);
+				return this;
+			},
 
-		skip: function () {
-			_.skip();
-			return this;
-		},
+			should: function (desc, fn) {
+				_.assert(desc, fn);
+				return this;
+			},
 
-		run: function (runner) {
-			_.run(runner);
-		}
+			xwhen: function (desc) {
+				return this.when(desc, noop);
+			},
+
+			xand: function (desc) {
+				return this.and(desc, noop);
+			},
+
+			xshould: function (desc) {
+				return this.should(desc, noop);
+			},
+
+			run: function (runner) {
+				_.run(runner);
+			}
+		};
+
+		specs.push(spec);
+
+		return spec;
 	};
 
-	// skip functions
-	['xwhen', 'xand', 'xshould'].forEach(function (f) {
-		_machiatto[f] = ret(_machiatto);
-	});
+	_machiatto.run = function (runner) {
+		specs.forEach(function (spec) {
+			spec.run(runner);
+		});
+	};
 
 	return _machiatto;
 }

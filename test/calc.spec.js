@@ -4,7 +4,7 @@ var expect = require('expect.js');
 var spec = machiatto('calc spec');
 var calc = require('./calc.js');
 
-spec
+spec('calculating sum')
 	.when('given numbers', function (context) {
 		context.a = 1;
 		context.b = 2;
@@ -22,7 +22,7 @@ spec
 		expect(context.result).to.equal(3);
 	});
 
-spec
+spec('calculating another sum with xand')
 	.when('given another numbers', function (context) {
 		context.a = 3;
 		context.b = 4;
@@ -36,7 +36,7 @@ spec
 		expect(context.result).to.equal(undefined);
 	});
 
-spec
+spec('calculating another sum with xshould')
 	.when('given another numbers', function (context) {
 		context.a = 5;
 		context.b = 6;
@@ -49,7 +49,7 @@ spec
 	});
 
 
-spec
+spec('calculating another sum with xwhen')
 	.xwhen('given another numbers', function (context) {
 		context.a = 5;
 		context.b = 6;
@@ -58,9 +58,7 @@ spec
 	.and('add operation')
 
 	.should('calculate sum', function (context) {
-		console.log(context);
-
-		expect(context.result).to.equal(1);
+		expect(isNaN(context.result)).to.be(true);
 	});
 
 module.exports = spec;

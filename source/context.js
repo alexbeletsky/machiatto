@@ -1,4 +1,13 @@
+var util = require('util');
 var tree = require('./tree');
+
+var roots = {};
+
+function debug(path) {
+	return path.reduce(function (m, p) {
+		return m + (p.model && p.model.name || '') + ' ';
+	}, '');
+}
 
 function test(name, spec) {
 	return {
@@ -25,8 +34,12 @@ function prepareContext(path) {
 	return empty;
 }
 
-function runAssert(context, assert, runner, test) {
+function runAssert(context, assert, runner, test, noop) {
 	assert.run = true;
+
+	if (assert.model.fn === noop) {
+		return runner.emit('pending');
+	}
 
 	try {
 		assert.model.fn(context);
@@ -37,17 +50,34 @@ function runAssert(context, assert, runner, test) {
 	return runner.emit('pass', test);
 }
 
-function context(name) {
-	var specName = name;
+function context(spec, suite, noop) {
 	var arranges = {};
 	var asserts = [];
-	var root = tree();
+	var root = tree({name: spec + ' root ' + suite});
+
 	var curr = null;
 	var skipped = false;
 
+	var cache = roots[spec] = roots[spec] || [];
+	cache.push(root);
+
 	return {
 		lookup: function (name) {
-			return arranges[name];
+			var found;
+
+			for(var i = 0; i < roots[spec].length; i++) {
+				found = roots[spec][i].find(pred);
+
+				if (found) {
+					break;
+				}
+			}
+
+			return found && found.model.fn;
+
+			function pred(node) {
+				return node.model && node.model.name === name && node.model.fn !== noop;
+			}
 		},
 
 		establish: function (name, fn) {
@@ -87,16 +117,7 @@ function context(name) {
 			return this;
 		},
 
-		skip: function () {
-			skipped = true;
-		},
-
 		run: function (runner) {
-			if (skipped) {
-				runner.emit('pending');
-				return;
-			}
-
 			asserts.forEach(executeAssert);
 
 			function executeAssert(assert) {
@@ -104,7 +125,8 @@ function context(name) {
 					var path = assert.path({includeSelf: false});
 					var context = prepareContext(path);
 
-					runAssert(context, assert, runner, test(assert.name, specName));
+					//console.log(util.inspect(debug(path), {depth: 5}));
+					runAssert(context, assert, runner, test(assert.name, spec), noop);
 
 					runner.emit('test end');
 				}

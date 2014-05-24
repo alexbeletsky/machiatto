@@ -32,6 +32,30 @@ function node(parent, model) {
 			}
 
 			return path.reverse();
+		},
+
+		find: function (pred) {
+			if (pred(this)) {
+				return this;
+			}
+
+			var found = deep(this.children);
+			if (found) {
+				return found;
+			}
+
+			function deep(children) {
+				var found;
+
+				for(var i = 0; i < children.length; i++) {
+					found = children[i].find(pred);
+					if (found) {
+						break;
+					}
+				}
+
+				return found;
+			}
 		}
 	};
 }
