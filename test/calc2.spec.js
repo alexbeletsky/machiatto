@@ -5,32 +5,32 @@ var calc = require('./calc');
 
 // reuse add here
 
-// spec
-// 	.when('two numbers', function (context) {
-// 		context.a = 4;
-// 		context.b = 4;
-// 	})
+spec('reuse add operation')
+	.when('two numbers', function (context) {
+		context.a = 4;
+		context.b = 4;
+	})
 
-// 	.and('add operation')
+	.and('add operation')
 
-// 	.should('calculate sum', function (context) {
-// 		expect(context.result).equal(8);
-// 	});
+	.should('calculate sum', function (context) {
+		expect(context.result).equal(8);
+	});
 
-// // start new context here
+// start new context here
 
-// spec.
-// 	when('mul operation', function (context) {
-// 		context.result = calc.mul(context.a, context.b);
-// 	});
+spec('create another context').
+	when('mul operation', function (context) {
+		context.result = calc.mul(context.a, context.b);
+	});
 
-// spec
-// 	.when('two numbers')
+spec('reuse when & and')
+	.when('two numbers')
 
-// 	.and('mul operation')
+	.and('mul operation')
 
-// 	.should('calculate multiplication', function (context) {
-// 		expect(context.result).equal(16);
-// 	});
+	.should('calculate multiplication', function (context) {
+		expect(context.result).equal(16);
+	});
 
 module.exports = spec;
