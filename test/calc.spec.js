@@ -28,12 +28,12 @@ spec
 		context.b = 4;
 	})
 
-	.and('add operation', function (context) {
+	.xand('add operation', function (context) {
 		context.result = calc.add(context.a, context.b);
 	})
 
 	.should('calculate sum', function (context) {
-		expect(context.result).to.equal(7);
+		expect(context.result).to.equal(undefined);
 	});
 
 spec
@@ -44,9 +44,21 @@ spec
 
 	.and('add operation')
 
-	.should('calculate sum', function (context) {
+	.xshould('calculate sum', function (context) {
 		expect(context.result).to.equal(11);
 	});
 
+
+spec
+	.xwhen('given another numbers', function (context) {
+		context.a = 5;
+		context.b = 6;
+	})
+
+	.and('add operation')
+
+	.should('calculate sum', function (context) {
+		expect(context.result).to.equal(1);
+	});
 
 module.exports = spec;

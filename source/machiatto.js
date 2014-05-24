@@ -1,5 +1,7 @@
 var context = require('./context');
 
+function ret(v) { return function () { return v; }; }
+
 function machiatto(specName) {
 	var _ = context(specName);
 
@@ -28,6 +30,11 @@ function machiatto(specName) {
 			_.run(runner);
 		}
 	};
+
+	// skip functions
+	['xwhen', 'xand', 'xshould'].forEach(function (f) {
+		_machiatto[f] = ret(_machiatto);
+	});
 
 	return _machiatto;
 }
