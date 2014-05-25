@@ -26,6 +26,8 @@ Create `helloworld.spec.js` file,
 
 ```js
 var behavior = require('machiatto');
+var expect = require('expect.js');
+
 var spec = behaviour('hello world specs');
 
 spec('hello world behaviour')
@@ -46,6 +48,8 @@ Then in `byeworld.spec.js` file,
 
 ```js
 var behavior = require('machiatto');
+var expect = require('expect.js');
+
 var spec = behaviour('hello');
 
 spec('bye world behaviour')
