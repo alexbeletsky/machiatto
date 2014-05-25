@@ -1,6 +1,7 @@
 //var util = require('util');
 var tree = require('./tree');
 
+function noop() {}
 var roots = {};
 
 // function debug(path) {
@@ -42,7 +43,7 @@ function prepareContext(path) {
 	return empty;
 }
 
-function runAssert(context, assert, runner, test, noop) {
+function runAssert(context, assert, runner, test) {
 	assert.run = true;
 
 	if (assert.model.fn === noop) {
@@ -58,7 +59,7 @@ function runAssert(context, assert, runner, test, noop) {
 	return runner.emit('pass', test);
 }
 
-function context(spec, suite, noop) {
+function context(spec, suite) {
 	var asserts = [];
 	var root = tree();
 	var curr = null;
@@ -92,6 +93,10 @@ function context(spec, suite, noop) {
 		},
 
 		establish: function (name, fn) {
+			if (typeof fn === 'string' && fn === 'noop') {
+				fn = noop;
+			}
+
 			fn = this.reusable(name, fn);
 			curr = root.add({type: 'when', name: name, fn: fn});
 
@@ -99,6 +104,10 @@ function context(spec, suite, noop) {
 		},
 
 		arrange: function (name, fn) {
+			if (typeof fn === 'string' && fn === 'noop') {
+				fn = noop;
+			}
+
 			if (!curr) {
 				throw new Error('context in not established, make sure `.when()` is called before');
 			}
@@ -110,6 +119,10 @@ function context(spec, suite, noop) {
 		},
 
 		assert: function (name, fn) {
+			if (typeof fn === 'string' && fn === 'noop') {
+				fn = noop;
+			}
+
 			var assert = curr.add({type: 'assert', name: name, fn: fn});
 			asserts.push(assert);
 

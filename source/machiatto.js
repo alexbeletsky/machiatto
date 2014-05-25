@@ -1,12 +1,10 @@
 var context = require('./context');
 
-function noop() {}
-
 function machiatto(suite) {
 	var suites = [];
 
 	var _machiatto = function (spec) {
-		var _ = context(suite, spec, noop);
+		var _ = context(suite, spec);
 
 		var _suite = {
 			when: function (desc, fn) {
@@ -25,15 +23,15 @@ function machiatto(suite) {
 			},
 
 			xwhen: function (desc) {
-				return this.when(desc, noop);
+				return this.when(desc, 'noop');
 			},
 
 			xand: function (desc) {
-				return this.and(desc, noop);
+				return this.and(desc, 'noop');
 			},
 
 			xshould: function (desc) {
-				return this.should(desc, noop);
+				return this.should(desc, 'noop');
 			},
 
 			run: function (runner) {
