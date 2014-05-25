@@ -3,7 +3,7 @@ var context = require('./context');
 function noop() {}
 
 function machiatto(suite) {
-	var sutes = [];
+	var suites = [];
 
 	var _machiatto = function (spec) {
 		var _ = context(suite, spec, noop);
@@ -41,14 +41,15 @@ function machiatto(suite) {
 			}
 		};
 
-		sutes.push(_suite);
+		suites.push(_suite);
+
 		return _suite;
 	};
 
 	_machiatto.run = function (runner) {
 		runner.emit('suite', {title: suite});
 
-		sutes.forEach(function (spec) {
+		suites.forEach(function (spec) {
 			spec.run(runner);
 		});
 
