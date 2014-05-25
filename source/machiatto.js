@@ -3,12 +3,12 @@ var context = require('./context');
 function noop() {}
 
 function machiatto(suite) {
-	var specs = [];
+	var sutes = [];
 
 	var _machiatto = function (spec) {
 		var _ = context(suite, spec, noop);
 
-		var _spec = {
+		var _suite = {
 			when: function (desc, fn) {
 				_.establish(desc, fn);
 				return this;
@@ -41,14 +41,14 @@ function machiatto(suite) {
 			}
 		};
 
-		specs.push(_spec);
-		return _spec;
+		sutes.push(_suite);
+		return _suite;
 	};
 
 	_machiatto.run = function (runner) {
 		runner.emit('suite', {title: suite});
 
-		specs.forEach(function (spec) {
+		sutes.forEach(function (spec) {
 			spec.run(runner);
 		});
 

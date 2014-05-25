@@ -37,7 +37,7 @@ spec('hello world behaviour')
 	.and('greet', function (context) {
 		context.result = context.world.greet();
 	})
-	.should('respond hello', function (context, expect) {
+	.should('respond hello', function (context) {
 		expect(context.result).to.equal('hello');
 	});
 
@@ -57,7 +57,7 @@ spec('bye world behaviour')
 	.and('bye', function (context) {
 		context.result = context.world.bye();
 	})
-	.should('respond bye', function (context, expect) {
+	.should('respond bye', function (contexts) {
 		expect(context.result).to.equal('bye-bye');
 	});
 
