@@ -23,13 +23,14 @@ glob('./test/*.spec.js', function (err, files) {
 		throw err;
 	}
 
+	runner.emit('start');
 
-	files.forEach(function (f) {
-		var spec = require(path.resolve(f));
-
-		runner.emit('start');
-		spec.run(runner, reporter);
-	});
+	files.forEach(runSpecFile);
 
 	runner.emit('end');
 });
+
+function runSpecFile(f) {
+	var spec = require(path.resolve(f));
+	spec.run(runner, reporter);
+}
