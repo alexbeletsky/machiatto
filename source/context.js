@@ -1,13 +1,13 @@
-var util = require('util');
+//var util = require('util');
 var tree = require('./tree');
 
 var roots = {};
 
-function debug(path) {
-	return path.reduce(function (m, p) {
-		return m + (p.model && p.model.name || '') + ' ';
-	}, '');
-}
+// function debug(path) {
+// 	return path.reduce(function (m, p) {
+// 		return m + (p.model && p.model.name || '') + ' ';
+// 	}, '');
+// }
 
 function test(name, spec) {
 	return {
@@ -24,13 +24,19 @@ function test(name, spec) {
 }
 
 function prepareContext(path) {
-	var empty = {};
+	var empty = {data: {}, name: ''};
 
 	path.forEach(runPathFunction);
 
 	function runPathFunction(node) {
+		var type = node.model && node.model.type;
+		var name = node.model && node.model.name;
 		var fn = node.model && node.model.fn;
-		fn && fn(empty);
+
+		if (name && fn) {
+			empty.name += type + ' ' + name + ' ';
+			fn(empty.data);
+		}
 	}
 
 	return empty;
@@ -87,7 +93,7 @@ function context(spec, suite, noop) {
 
 		establish: function (name, fn) {
 			fn = this.reusable(name, fn);
-			curr = root.add({name: name, fn: fn});
+			curr = root.add({type: 'when', name: name, fn: fn});
 
 			return this;
 		},
@@ -98,13 +104,13 @@ function context(spec, suite, noop) {
 			}
 
 			fn = this.reusable(name, fn);
-			curr = curr.add({name: name, fn: fn});
+			curr = curr.add({type: 'and', name: name, fn: fn});
 
 			return this;
 		},
 
 		assert: function (name, fn) {
-			var assert = curr.add({name: name, fn: fn});
+			var assert = curr.add({type: 'assert', name: name, fn: fn});
 			asserts.push(assert);
 
 			return this;
@@ -116,19 +122,15 @@ function context(spec, suite, noop) {
 			});
 
 			if (!executed && asserts.length > 0) {
-				runner.emit('suite', {title: suite});
-
 				asserts.forEach(executeAssert);
-
-				runner.emit('suite end');
 			}
 
 			function executeAssert(assert) {
 				var path = assert.path({includeSelf: false});
 				var context = prepareContext(path);
+				var name = context.name + 'it should ' + assert.model.name;
 
-				//console.log(util.inspect(debug(path), {depth: 5}));
-				runAssert(context, assert, runner, test(assert.model.name, spec), noop);
+				runAssert(context.data, assert, runner, test(name, spec), noop);
 
 				runner.emit('test end');
 			}
