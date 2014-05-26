@@ -32,18 +32,30 @@ glob('./test/*.spec.js', function (err, files) {
 	});
 
 	var asserts = suites.reduce(function (asserts, suite) {
-		var suiteName = suite._name();
+		return asserts.concat(suite._asserts());
+	}, []);
+
+	var only = asserts.filter(function (assert) {
+		return assert.only;
+	});
+
+	asserts = only.length > 0 ? only : asserts;
+
+	var grouped = asserts.reduce(function (asserts, assert) {
+		var suiteName = assert.suite;
 		var suiteAsserts = asserts[suiteName] || [];
-		asserts[suiteName] = suiteAsserts.concat(suite._asserts());
+
+		suiteAsserts.push(assert);
+		asserts[suiteName] = suiteAsserts;
 
 		return asserts;
 	}, {});
 
 	runner.emit('start');
 
-	Object.keys(asserts).forEach(function (suiteName) {
+	Object.keys(grouped).forEach(function (suiteName) {
 		runner.emit('suite', {title: suiteName});
-		asserts[suiteName].forEach(runAssert);
+		grouped[suiteName].forEach(runAssert);
 		runner.emit('suite end');
 	});
 

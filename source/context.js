@@ -36,8 +36,12 @@ function prepareContext(path) {
 	return empty;
 }
 
-function assertRunner(assert, spec, skipped) {
+function assertRunner(assert, suite, spec, skipped, only) {
 	return {
+		suite: suite,
+
+		only: only,
+
 		run: function (runner) {
 			if (!assert.run) {
 				var path = assert.path({includeSelf: false});
@@ -76,6 +80,7 @@ function context(suite, spec) {
 	cache.push(root);
 
 	var skipped = false;
+	var only = false;
 
 	return {
 		lookup: function (name) {
@@ -144,9 +149,14 @@ function context(suite, spec) {
 			return this;
 		},
 
+		only: function () {
+			only = true;
+			return this;
+		},
+
 		asserts: function () {
 			return asserts.map(function (assert) {
-				return assertRunner(assert, spec, skipped);
+				return assertRunner(assert, suite, spec, skipped, only);
 			});
 		}
 	};

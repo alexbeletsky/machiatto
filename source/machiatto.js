@@ -28,6 +28,11 @@ function machiatto(suite) {
 				return this;
 			},
 
+			only: function () {
+				_.only();
+				return this;
+			},
+
 			xwhen: function (desc) {
 				return this.when(desc, 'noop');
 			},
