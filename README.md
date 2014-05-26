@@ -34,9 +34,11 @@ spec('hello world behaviour')
 	.when('world is created', function (context) {
 		context.world = new World();
 	})
+
 	.and('greet', function (context) {
 		context.result = context.world.greet();
 	})
+
 	.should('respond hello', function (context) {
 		expect(context.result).to.equal('hello');
 	});
@@ -54,9 +56,11 @@ var spec = behaviour('hello');
 
 spec('bye world behaviour')
 	.when('world is created')
+
 	.and('bye', function (context) {
 		context.result = context.world.bye();
 	})
+
 	.should('respond bye', function (contexts) {
 		expect(context.result).to.equal('bye-bye');
 	});
@@ -82,6 +86,3 @@ TBD.
 # License
 
 MIT (c) alexander.beletsky@gmail.com
-
-
-
