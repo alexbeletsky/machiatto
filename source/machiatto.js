@@ -5,8 +5,9 @@ function machiatto(suite) {
 
 	var _machiatto = function (spec) {
 		var _ = context(suite, spec);
+		suites.push(_);
 
-		var _suite = {
+		return {
 			when: function (desc, fn) {
 				_.establish(desc, fn);
 				return this;
@@ -32,26 +33,19 @@ function machiatto(suite) {
 
 			xshould: function (desc) {
 				return this.should(desc, 'noop');
-			},
-
-			run: function (runner) {
-				_.run(runner);
 			}
 		};
-
-		suites.push(_suite);
-
-		return _suite;
 	};
 
-	_machiatto.run = function (runner) {
-		runner.emit('suite', {title: suite});
+	_machiatto._name = function () {
+		return suite;
+	};
 
-		suites.forEach(function (spec) {
-			spec.run(runner);
-		});
-
-		runner.emit('suite end');
+	_machiatto._asserts = function () {
+		return suites.reduce(function (asserts, suite) {
+			asserts = asserts.concat(suite.asserts());
+			return asserts;
+		}, []);
 	};
 
 	return _machiatto;

@@ -1,14 +1,7 @@
-//var util = require('util');
 var tree = require('./tree');
 
 function noop() {}
 var roots = {};
-
-// function debug(path) {
-// 	return path.reduce(function (m, p) {
-// 		return m + (p.model && p.model.name || '') + ' ';
-// 	}, '');
-// }
 
 function test(name, spec) {
 	return {
@@ -43,28 +36,43 @@ function prepareContext(path) {
 	return empty;
 }
 
-function runAssert(context, assert, runner, test) {
-	assert.run = true;
+function assertRunner(assert, spec) {
+	return {
+		run: function (runner) {
+			if (!assert.run) {
+				var path = assert.path({includeSelf: false});
+				var context = prepareContext(path);
+				var name = context.name + 'it should ' + assert.model.name;
 
-	if (assert.model.fn === noop) {
-		return runner.emit('pending', test);
+				run(context.data, assert, runner, test(name, spec), noop);
+				runner.emit('test end');
+			}
+		}
+	};
+
+	function run(context, assert, runner, test) {
+		assert.run = true;
+
+		if (assert.model.fn === noop) {
+			return runner.emit('pending', test);
+		}
+
+		try {
+			assert.model.fn(context);
+		} catch (err) {
+			return runner.emit('fail', test, err);
+		}
+
+		return runner.emit('pass', test);
 	}
-
-	try {
-		assert.model.fn(context);
-	} catch (err) {
-		return runner.emit('fail', test, err);
-	}
-
-	return runner.emit('pass', test);
 }
 
-function context(spec, suite) {
+function context(suite, spec) {
 	var asserts = [];
 	var root = tree();
 	var curr = null;
 
-	var cache = roots[spec] = roots[spec] || [];
+	var cache = roots[suite] = roots[suite] || [];
 	cache.push(root);
 
 	return {
@@ -73,8 +81,8 @@ function context(spec, suite) {
 				return node.model && node.model.name === name && node.model.fn !== noop;
 			};
 
-			for(var i = 0; i < roots[spec].length; i++) {
-				var found = roots[spec][i].find(pred);
+			for(var i = 0; i < roots[suite].length; i++) {
+				var found = roots[suite][i].find(pred);
 
 				if (found) {
 					return found.model.fn;
@@ -124,29 +132,13 @@ function context(spec, suite) {
 			}
 
 			var assert = curr.add({type: 'assert', name: name, fn: fn});
-			asserts.push(assert);
+			asserts.push(assertRunner(assert, spec));
 
 			return this;
 		},
 
-		run: function (runner) {
-			var executed = asserts.some(function (assert) {
-				return assert.run;
-			});
-
-			if (!executed && asserts.length > 0) {
-				asserts.forEach(executeAssert);
-			}
-
-			function executeAssert(assert) {
-				var path = assert.path({includeSelf: false});
-				var context = prepareContext(path);
-				var name = context.name + 'it should ' + assert.model.name;
-
-				runAssert(context.data, assert, runner, test(name, spec), noop);
-
-				runner.emit('test end');
-			}
+		asserts: function () {
+			return asserts;
 		}
 	};
 }

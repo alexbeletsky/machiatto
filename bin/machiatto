@@ -18,6 +18,10 @@ program.parse(process.argv);
 var runner = new EventEmitter();
 var reporter = new Reporter(runner);
 
+function runAssert(assert) {
+	assert.run(runner, reporter);
+}
+
 glob('./test/*.spec.js', function (err, files) {
 	if (err) {
 		throw err;
@@ -25,12 +29,23 @@ glob('./test/*.spec.js', function (err, files) {
 
 	runner.emit('start');
 
-	files.forEach(runSpecFile);
+	var suites = files.map(function (file) {
+		return require(path.resolve(file));
+	});
+
+	var asserts = suites.reduce(function (asserts, suite) {
+		var suiteName = suite._name();
+		var suiteAsserts = asserts[suiteName] || [];
+		asserts[suiteName] = suiteAsserts.concat(suite._asserts());
+
+		return asserts;
+	}, {});
+
+	Object.keys(asserts).forEach(function (suiteName) {
+		runner.emit('suite', {title: suiteName});
+		asserts[suiteName].forEach(runAssert);
+		runner.emit('suite end');
+	});
 
 	runner.emit('end');
 });
-
-function runSpecFile(f) {
-	var spec = require(path.resolve(f));
-	spec.run(runner, reporter);
-}
