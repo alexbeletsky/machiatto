@@ -27,8 +27,6 @@ glob('./test/*.spec.js', function (err, files) {
 		throw err;
 	}
 
-	runner.emit('start');
-
 	var suites = files.map(function (file) {
 		return require(path.resolve(file));
 	});
@@ -40,6 +38,8 @@ glob('./test/*.spec.js', function (err, files) {
 
 		return asserts;
 	}, {});
+
+	runner.emit('start');
 
 	Object.keys(asserts).forEach(function (suiteName) {
 		runner.emit('suite', {title: suiteName});

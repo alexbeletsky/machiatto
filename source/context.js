@@ -36,7 +36,7 @@ function prepareContext(path) {
 	return empty;
 }
 
-function assertRunner(assert, spec) {
+function assertRunner(assert, spec, skipped) {
 	return {
 		run: function (runner) {
 			if (!assert.run) {
@@ -53,7 +53,7 @@ function assertRunner(assert, spec) {
 	function run(context, assert, runner, test) {
 		assert.run = true;
 
-		if (assert.model.fn === noop) {
+		if (assert.model.fn === noop || skipped) {
 			return runner.emit('pending', test);
 		}
 
@@ -74,6 +74,8 @@ function context(suite, spec) {
 
 	var cache = roots[suite] = roots[suite] || [];
 	cache.push(root);
+
+	var skipped = false;
 
 	return {
 		lookup: function (name) {
@@ -132,13 +134,20 @@ function context(suite, spec) {
 			}
 
 			var assert = curr.add({type: 'assert', name: name, fn: fn});
-			asserts.push(assertRunner(assert, spec));
+			asserts.push(assert);
 
 			return this;
 		},
 
+		skip: function () {
+			skipped = true;
+			return this;
+		},
+
 		asserts: function () {
-			return asserts;
+			return asserts.map(function (assert) {
+				return assertRunner(assert, spec, skipped);
+			});
 		}
 	};
 }

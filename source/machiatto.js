@@ -23,6 +23,11 @@ function machiatto(suite) {
 				return this;
 			},
 
+			skip: function () {
+				_.skip();
+				return this;
+			},
+
 			xwhen: function (desc) {
 				return this.when(desc, 'noop');
 			},

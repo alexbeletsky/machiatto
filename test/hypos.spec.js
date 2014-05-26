@@ -21,6 +21,8 @@ spec('context initalization')
 	});
 
 spec('context initalization 2')
+	.skip()
+
 	.when('setup context', function (context) {
 		context.a = 3;
 	})
