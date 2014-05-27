@@ -1,3 +1,4 @@
+var async = require('async');
 var tree = require('./tree');
 
 function noop() {}
@@ -17,23 +18,34 @@ function test(name, spec) {
 	};
 }
 
-function prepareContext(path) {
+function prepareContext(path, callback) {
 	var empty = {data: {}, name: ''};
 
-	path.forEach(runPathFunction);
+	async.eachSeries(path, runPathFunction, function (err) {
+		callback(err, empty);
+	});
 
-	function runPathFunction(node) {
+	function runPathFunction(node, callback) {
 		var type = node.model && node.model.type;
 		var name = node.model && node.model.name;
 		var fn = node.model && node.model.fn;
 
-		if (name && fn) {
+		if (name && fn && fn !== noop) {
 			empty.name += type + ' ' + name + ' ';
-			fn(empty.data);
+			fn = fn.length === 2 ? fn : asyncWrap(fn);
+
+			return fn(empty.data, callback);
 		}
+
+		callback(null);
 	}
 
-	return empty;
+	function asyncWrap(fn) {
+		return function (context, callback) {
+			fn(context);
+			process.nextTick(callback);
+		};
+	}
 }
 
 function assertRunner(assert, suite, spec, skipped, only) {
@@ -42,15 +54,25 @@ function assertRunner(assert, suite, spec, skipped, only) {
 
 		only: only,
 
-		run: function (runner) {
+		run: function (runner, callback) {
 			if (!assert.run) {
 				var path = assert.path({includeSelf: false});
-				var context = prepareContext(path);
-				var name = context.name + 'it should ' + assert.model.name;
 
-				run(context.data, assert, runner, test(name, spec), noop);
-				runner.emit('test end');
+				return prepareContext(path, function (err, context) {
+					if (err) {
+						return callback(err);
+					}
+
+					var name = context.name + 'it should ' + assert.model.name;
+
+					run(context.data, assert, runner, test(name, spec));
+					runner.emit('test end');
+
+					callback(null);
+				});
 			}
+
+			callback(null);
 		}
 	};
 

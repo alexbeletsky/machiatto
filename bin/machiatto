@@ -3,16 +3,17 @@
 var fs = require('fs');
 var path = require('path');
 var EventEmitter = require('events').EventEmitter;
-var Reporter = require('../source/reporters/spec');
 
+var async = require('async');
 var program = require('commander');
 var glob = require('glob');
+
+var Reporter = require('../source/reporters/spec');
 
 program
   .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version);
 
 program.name = 'machiatto';
-
 program.parse(process.argv);
 
 glob('./test/*.spec.js', loadSuitesAndRun);
@@ -54,8 +55,8 @@ function groupAssertsBySuite(asserts) {
 }
 
 function runAssert(runner, reporter) {
-	return function (assert) {
-		assert.run(runner, reporter);
+	return function (assert, callback) {
+		assert.run(runner, callback);
 	};
 }
 
@@ -65,11 +66,21 @@ function executeAsserts(grouped) {
 
 	runner.emit('start');
 
-	Object.keys(grouped).forEach(function (suiteName) {
+	var suiteNames = Object.keys(grouped);
+	async.eachSeries(suiteNames, function (suiteName, callback) {
 		runner.emit('suite', {title: suiteName});
-		grouped[suiteName].forEach(runAssert(runner, reporter));
-		runner.emit('suite end');
-	});
 
-	runner.emit('end');
+		var asserts = grouped[suiteName];
+		async.eachSeries(asserts, runAssert(runner, reporter), function (err) {
+			runner.emit('suite end');
+			callback(err);
+		});
+
+	}, function (err) {
+		if (err) {
+			throw err;
+		}
+
+		runner.emit('end');
+	});
 }
