@@ -4,6 +4,14 @@ Behaviour driven test framework.
 
 **NOTE:** API is still under development and could be changed.
 
+## Features
+
+* BDD friendly syntax
+* Context re-use between tests and files
+* Better structure for same context tests
+* Sync and async code testing
+* Browser and node.js
+
 ## Usage
 
 Install `machiatto` as npm package,
@@ -59,14 +67,6 @@ module.exports = spec;
 ```
 
 See [/test](/test).
-
-## Features
-
-* BDD friendly syntax
-* Context re-use between tests and files
-* Better structure for same context tests
-* Sync and async code testing
-* Browser and node.js
 
 ## API
 
