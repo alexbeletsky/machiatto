@@ -29,7 +29,7 @@ function prepareContext(path) {
 
 		if (name && fn) {
 			empty.name += type + ' ' + name + ' ';
-			fn(empty.data);
+			fn.call(empty.data);
 		}
 	}
 
@@ -62,7 +62,7 @@ function assertRunner(assert, suite, spec, skipped, only) {
 		}
 
 		try {
-			assert.model.fn(context);
+			assert.model.fn.call(context);
 		} catch (err) {
 			return runner.emit('fail', test, err);
 		}

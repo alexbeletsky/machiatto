@@ -6,22 +6,22 @@ var calc = require('./calc');
 // reuse add here
 
 spec('reuse add operation')
-	.when('two numbers', function (context) {
-		context.a = 4;
-		context.b = 4;
+	.when('two numbers', function () {
+		this.a = 4;
+		this.b = 4;
 	})
 
 	.and('add operation')
 
-	.should('calculate sum', function (context) {
-		expect(context.result).equal(8);
+	.should('calculate sum', function () {
+		expect(this.result).equal(8);
 	});
 
 // start new context here
 
-spec('create another context').
-	when('mul operation', function (context) {
-		context.result = calc.mul(context.a, context.b);
+spec('create another this').
+	when('mul operation', function () {
+		this.result = calc.mul(this.a, this.b);
 	});
 
 spec('reuse when & and')
@@ -29,8 +29,8 @@ spec('reuse when & and')
 
 	.and('mul operation')
 
-	.should('calculate multiplication', function (context) {
-		expect(context.result).equal(16);
+	.should('calculate multiplication', function () {
+		expect(this.result).equal(16);
 	});
 
 module.exports = spec;

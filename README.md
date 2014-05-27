@@ -25,22 +25,22 @@ Install `machiatto` as npm package,
 Create `helloworld.spec.js` file,
 
 ```js
-var behavior = require('machiatto');
+var behaviour = require('machiatto');
 var expect = require('expect.js');
 
 var spec = behaviour('hello world specs');
 
 spec('hello world behaviour')
-	.when('world is created', function (context) {
-		context.world = new World();
+	.when('world is created', function () {
+		this.world = new World();
 	})
 
-	.and('greet', function (context) {
-		context.result = context.world.greet();
+	.and('greet', function () {
+		this.result = this.world.greet();
 	})
 
-	.should('respond hello', function (context) {
-		expect(context.result).to.equal('hello');
+	.should('respond hello', function () {
+		expect(this.result).to.equal('hello');
 	});
 
 module.exports = spec;
@@ -49,7 +49,7 @@ module.exports = spec;
 Then in `byeworld.spec.js` file,
 
 ```js
-var behavior = require('machiatto');
+var behaviour = require('machiatto');
 var expect = require('expect.js');
 
 var spec = behaviour('hello');
@@ -57,12 +57,12 @@ var spec = behaviour('hello');
 spec('bye world behaviour')
 	.when('world is created')
 
-	.and('bye', function (context) {
-		context.result = context.world.bye();
+	.and('bye', function () {
+		this.result = this.world.bye();
 	})
 
-	.should('respond bye', function (contexts) {
-		expect(context.result).to.equal('bye-bye');
+	.should('respond bye', function () {
+		expect(this.result).to.equal('bye-bye');
 	});
 
 module.exports = spec;
@@ -73,7 +73,7 @@ See [/test](/test).
 
 ## Features
 
-* Context re-use between tests and files
+* Functions context re-use between tests and files
 * Better structure for same context tests
 * Sync and async code testing
 * Browser and node.js
