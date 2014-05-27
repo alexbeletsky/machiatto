@@ -2,6 +2,8 @@
 
 Behaviour driven test framework.
 
+**NOTE:** API is still under development and could be changed.
+
 ## Usage
 
 Install `machiatto` as npm package,
@@ -152,7 +154,6 @@ module.exports = spec;
 3. [Mocha]() exposes all their API as global functions, so `describe` or `it` are usually warnings for `jshint`.
 
 [Machiatto]() is an effort to fix [Mocha]() and provide better BDD testing framework.
-
 
 # License
 
