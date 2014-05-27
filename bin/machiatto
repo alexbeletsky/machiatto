@@ -15,9 +15,6 @@ program.name = 'machiatto';
 
 program.parse(process.argv);
 
-var runner = new EventEmitter();
-var reporter = new Reporter(runner);
-
 glob('./test/*.spec.js', loadSuitesAndRun);
 
 function loadSuitesAndRun(err, files) {
@@ -41,9 +38,7 @@ function loadSuitesAndRun(err, files) {
 
 	var grouped = groupAssertsBySuite(asserts);
 
-	runner.emit('start');
-	executeAsserts(grouped, runner);
-	runner.emit('end');
+	executeAsserts(grouped);
 }
 
 function groupAssertsBySuite(asserts) {
@@ -58,14 +53,23 @@ function groupAssertsBySuite(asserts) {
 	}, {});
 }
 
-function runAssert(assert) {
-	assert.run(runner, reporter);
+function runAssert(runner, reporter) {
+	return function (assert) {
+		assert.run(runner, reporter);
+	};
 }
 
-function executeAsserts(grouped, runner) {
+function executeAsserts(grouped) {
+	var runner = new EventEmitter();
+	var reporter = new Reporter(runner);
+
+	runner.emit('start');
+
 	Object.keys(grouped).forEach(function (suiteName) {
 		runner.emit('suite', {title: suiteName});
-		grouped[suiteName].forEach(runAssert);
+		grouped[suiteName].forEach(runAssert(runner, reporter));
 		runner.emit('suite end');
 	});
+
+	runner.emit('end');
 }
