@@ -18,11 +18,9 @@ program.parse(process.argv);
 var runner = new EventEmitter();
 var reporter = new Reporter(runner);
 
-function runAssert(assert) {
-	assert.run(runner, reporter);
-}
+glob('./test/*.spec.js', loadSuitesAndRun);
 
-glob('./test/*.spec.js', function (err, files) {
+function loadSuitesAndRun(err, files) {
 	if (err) {
 		throw err;
 	}
@@ -41,7 +39,15 @@ glob('./test/*.spec.js', function (err, files) {
 
 	asserts = only.length > 0 ? only : asserts;
 
-	var grouped = asserts.reduce(function (asserts, assert) {
+	var grouped = groupAssertsBySuite(asserts);
+
+	runner.emit('start');
+	executeAsserts(grouped, runner);
+	runner.emit('end');
+}
+
+function groupAssertsBySuite(asserts) {
+	return asserts.reduce(function (asserts, assert) {
 		var suiteName = assert.suite;
 		var suiteAsserts = asserts[suiteName] || [];
 
@@ -50,14 +56,16 @@ glob('./test/*.spec.js', function (err, files) {
 
 		return asserts;
 	}, {});
+}
 
-	runner.emit('start');
+function runAssert(assert) {
+	assert.run(runner, reporter);
+}
 
+function executeAsserts(grouped, runner) {
 	Object.keys(grouped).forEach(function (suiteName) {
 		runner.emit('suite', {title: suiteName});
 		grouped[suiteName].forEach(runAssert);
 		runner.emit('suite end');
 	});
-
-	runner.emit('end');
-});
+}
