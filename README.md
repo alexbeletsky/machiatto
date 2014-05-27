@@ -2,7 +2,7 @@
 
 Behaviour driven test framework.
 
-**NOTE:** API is still under development and could be changed.
+**NOTE:** API is still under development and it is subject of change.
 
 ## Features
 
