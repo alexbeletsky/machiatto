@@ -2,8 +2,6 @@
 
 Behaviour driven test framework.
 
-**NOTE:** API is still under development and it is subject of change.
-
 ## Features
 
 * BDD friendly syntax

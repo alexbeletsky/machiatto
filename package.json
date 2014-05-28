@@ -2,7 +2,7 @@
   "name": "machiatto",
   "version": "0.0.1",
   "description": "Behavior driven test framework",
-  "main": "index.js",
+  "main": "source/machiatto.js",
   "scripts": {
     "test": "node test/hypos.js"
   },
@@ -14,7 +14,10 @@
     "tdd",
     "bdd",
     "behaviour",
+    "framework",
+    "unit",
     "test",
+    "testing",
     "browser",
     "nodejs"
   ],
