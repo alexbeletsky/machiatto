@@ -143,6 +143,96 @@ The `spec` have to be exported from module, to allow runner to execute it.
 module.exports = spec;
 ```
 
+### Context re-usage
+
+Once `.when()` or `.and()` function is called it's possible to reuse it's body within same suite by name.
+
+```js
+spec('add item to collection')
+	.when('collection is created', function (context) {
+		context.collection = new Collection();
+	})
+
+	.and('item added', function (context) {
+		context.collection.add(new Item());
+	})
+
+	.should('have correct length', function (context) {
+		expect(context.collection).to.have.length(1);
+	});
+
+spec('remove item from collection')
+	.when('collection is created')
+
+	.and('item added')
+
+	.and('item removed after', function (context) {
+		context.collection.remove(0);
+	})
+
+	.should('have correct length', function (context) {
+		expect(context.collection).to.have.length(0);
+	});
+```
+
+### X-functions
+
+It's possible to prevent and of `.when()`, `.and()` or `.should()` from execution, by prefix function name with `x` - `.xwhen()`, '.xand()' and `.xshould()`.
+
+```js
+spec('remove item from collection')
+	.when('collection is created')
+
+	.and('item added')
+
+	.and('item removed after', function (context) {
+		context.collection.remove(0);
+	})
+
+	// this one will be skipped..
+	.xshould('have correct length', function (context) {
+		expect(context.collection).to.have.length(0);
+	});
+```
+
+### Execution flow
+
+You can manage execution flow of specs with `.skip()` and `.only()` functions.
+
+```js
+spec('add item to collection')
+	.when('collection is created', function (context) {
+		context.collection = new Collection();
+	})
+
+	.and('item added', function (context) {
+		context.collection.add(new Item());
+	})
+
+	.should('have correct length', function (context) {
+		expect(context.collection).to.have.length(1);
+	})
+
+	// only this spec will run
+	.only();
+
+spec('remove item from collection')
+	.when('collection is created')
+
+	.and('item added')
+
+	.and('item removed after', function (context) {
+		context.collection.remove(0);
+	})
+
+	.should('have correct length', function (context) {
+		expect(context.collection).to.have.length(0);
+	})
+
+	// this spec will be excluded of execution
+	.skip()
+```
+
 ## Motivation
 
 [Machiatto]() is [Mocha]() inspired frawemork. There was several motivation points, why I think it's time to reconsider [Mocha]().
