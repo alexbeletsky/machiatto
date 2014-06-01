@@ -27,7 +27,7 @@ Install `machiatto` as npm package,
 Create `helloworld.spec.js` file,
 
 ```js
-var behavior = require('machiatto');
+var behaviour = require('machiatto');
 var expect = require('expect.js');
 
 var spec = behaviour('hello world specs');
@@ -51,7 +51,7 @@ module.exports = spec;
 Then in `byeworld.spec.js` file,
 
 ```js
-var behavior = require('machiatto');
+var behaviour = require('machiatto');
 var expect = require('expect.js');
 
 var spec = behaviour('hello');
