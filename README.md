@@ -10,6 +10,12 @@ Behaviour driven test framework.
 * Sync and async code testing
 * Browser and node.js
 
+## Status
+
+Project is currently under heavy development and not yet ready for production usage.
+
+Checkout current [Road Map](https://github.com/alexanderbeletsky/machiatto/wiki/Road-Map) to `0.2.0` stable version.
+
 ## Usage
 
 Install `machiatto` as npm package,
