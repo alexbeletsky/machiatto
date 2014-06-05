@@ -1,20 +1,20 @@
-var exec = require('child_process').exec;
-var gulp = require('gulp');
 
-gulp.task('fix', function () {
+var gulp = require('gulp');
+var exec = require('gulp-exec');
+var diff = require('gulp-diff').diff;
+var reporter = require('gulp-diff').reporter;
+
+gulp.task('approve', function () {
 	gulp.src('./bin/machiatto')
-		.pipe(gulp.dest('./fixed/bin'));
-	gulp.src('./source/*/**')
-		.pipe(gulp.dest('./fixed/source'));
-	gulp.src('./package.json')
-		.pipe(gulp.dest('./fixed/'));
+		.pipe(exec('<%= file.path %>', {pipeStdout: true}))
+		.pipe(gulp.dest('./.approved'));
 });
 
 gulp.task('test', function (cb) {
-	exec('./fixed/bin/machiatto', function (err, stdout, stderr) {
-		console.log(stdout);
-		cb(err);
-	});
+	gulp.src('./bin/machiatto')
+		.pipe(exec('<%= file.path %>', {pipeStdout: true}))
+		.pipe(diff('./.approved'))
+		.pipe(reporter());
 });
 
 gulp.task('watch', function () {
