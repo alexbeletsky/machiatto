@@ -24,7 +24,11 @@ function loadSuitesAndRun(err, files) {
 	}
 
 	var suites = files.map(function (file) {
-		return require(path.resolve(file));
+		var suite = require(path.resolve(file));
+		if (!suite) {
+			throw new Error('failed to load suite from ' + file + '. missing `module.exports = spec`?');
+		}
+		return suite;
 	});
 
 	var asserts = suites.reduce(function (asserts, suite) {
