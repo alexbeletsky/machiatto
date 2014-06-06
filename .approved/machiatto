@@ -17,6 +17,6 @@ hypos spec
 [2K[0G  ✓ when setup context and additional setup context it should initalize context.a 
 [2K[0G  ✓ when setup context and additional setup context it should initalize context.b 
 
-  13 tests complete (15 ms)
+
   1 test pending
 
