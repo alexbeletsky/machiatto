@@ -32,7 +32,8 @@
     "commander": "~2.2.0",
     "async": "~0.9.0",
     "glob": "~4.0.0",
-    "gulp": "~3.7.0"
+    "gulp": "~3.7.0",
+    "debug": "*"
   },
   "devDependencies": {
     "expect.js": "~0.3.1",

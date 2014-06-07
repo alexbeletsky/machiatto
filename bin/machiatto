@@ -6,12 +6,16 @@ var program = require('commander');
 var runner = require('../source/runner');
 
 program
-  .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version);
+  .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
+  .option('-R, --reporter <name>', 'specify the reporter to use', 'dot');
 
 program.name = 'machiatto';
 program.parse(process.argv);
 
-runner('./test/dot', function (err, result) {
+var from = program.args || './test';
+var reporter = program.reporter || 'Dot';
+
+runner({from: from, reporter: reporter}, function (err, result) {
 	if (err) {
 		console.error(err);
 	}
