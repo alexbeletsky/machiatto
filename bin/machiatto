@@ -15,10 +15,10 @@ program.parse(process.argv);
 var from = program.args || './test';
 var reporter = program.reporter;
 
-runner({from: from, reporter: reporter}, function (err, result) {
+runner({from: from, reporter: reporter}, function (err, stats) {
 	if (err) {
 		console.error(err);
 	}
 
-	process.exit(result);
+	process.exit(stats.failures);
 });

@@ -79,7 +79,7 @@ function runner(options, callback) {
 
 			runner.emit('end');
 
-			callback(err, err ? 1: 0);
+			callback(err, reporter.stats);
 		});
 	}
 }
