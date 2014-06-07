@@ -13,7 +13,7 @@ program.name = 'machiatto';
 program.parse(process.argv);
 
 var from = program.args || './test';
-var reporter = program.reporter || 'Dot';
+var reporter = program.reporter;
 
 runner({from: from, reporter: reporter}, function (err, result) {
 	if (err) {

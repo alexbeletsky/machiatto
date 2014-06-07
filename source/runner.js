@@ -4,10 +4,9 @@ var path = require('path');
 var async = require('async');
 var glob = require('glob');
 
-var reporters = require('./reporters');
-
 function runner(options, callback) {
 	var from = options.from;
+	var Reporter = require('./reporters/' + options.reporter);
 
 	glob(from + '/*.spec.js', loadSuitesAndRun);
 
@@ -59,7 +58,7 @@ function runner(options, callback) {
 
 	function executeAsserts(grouped, callback) {
 		var runner = new EventEmitter();
-		var reporter = new reporters[options.reporter](runner);
+		var reporter = new Reporter(runner);
 
 		runner.emit('start');
 
