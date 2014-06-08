@@ -33,7 +33,8 @@
     "async": "~0.9.0",
     "glob": "~4.0.0",
     "gulp": "~3.7.0",
-    "debug": "*"
+    "debug": "*",
+    "jade": "0.26.3"
   },
   "devDependencies": {
     "expect.js": "~0.3.1",

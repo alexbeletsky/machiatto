@@ -6,6 +6,7 @@ var glob = require('glob');
 
 function runner(options, callback) {
 	var from = options.from;
+	// TODO: allow to use custom reporter as mocha does..
 	var Reporter = require('./reporters/' + options.reporter);
 
 	glob(from + '/*.spec.js', loadSuitesAndRun);
