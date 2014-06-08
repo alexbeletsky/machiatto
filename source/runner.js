@@ -5,11 +5,11 @@ var async = require('async');
 var glob = require('glob');
 
 function runner(options, callback) {
-	var from = options.from;
+	var files = options.files;
 	// TODO: allow to use custom reporter as mocha does..
 	var Reporter = require('./reporters/' + options.reporter);
 
-	glob(from + '/*.spec.js', loadSuitesAndRun);
+	glob(files + '/*.spec.js', loadSuitesAndRun);
 
 	function loadSuitesAndRun(err, files) {
 		if (err) {
