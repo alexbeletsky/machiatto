@@ -3,7 +3,8 @@ var async = require('async');
 
 var specs = [
 	['--reporter', 'dot'],
-	['--reporter', 'spec']
+	['--reporter', 'spec'],
+	['--reporter', 'doc'],
 ];
 
 var specRunner = function (option) {
