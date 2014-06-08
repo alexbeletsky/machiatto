@@ -1,22 +1,5 @@
 
-async spec
-[2K[0G  ✓ when reading test.txt it should have content 
-calc spec
-[2K[0G  ✓ when given numbers and add operation it should calculate sum 
-[2K[0G  ✓ when given numbers and add operation it should calculate sum 2 
-[2K[0G  ✓ when given another numbers it should calculate sum 
-  - when given another numbers and add operation it should calculate sum
-[2K[0G  ✓ and add operation it should calculate sum 
-[2K[0G  ✓ when two numbers and add operation it should calculate sum 
-[2K[0G  ✓ when two numbers and mul operation it should calculate multiplication 
-empty
-[2K[0G  ✓ when nothing it should nothing 
-hypos spec
-[2K[0G  ✓ when setup context and additional setup context it should initalize context.a 
-[2K[0G  ✓ when setup context and additional setup context it should initalize context.b 
-[2K[0G  ✓ when setup context and additional setup context it should initalize context.a 
-[2K[0G  ✓ when setup context and additional setup context it should initalize context.b 
+  
 
 
-  1 test pending
 
