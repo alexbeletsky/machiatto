@@ -68,7 +68,8 @@ function runner(options, callback) {
 
 			var asserts = grouped[suiteName];
 			async.eachSeries(asserts, runAssert(runner, reporter), function (err) {
-				runner.emit('suite end');
+				// TODO: {root: false} - for all cases, need to fixed..
+			runner.emit('suite end', {root: false});
 				callback(err);
 			});
 

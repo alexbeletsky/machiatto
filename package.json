@@ -4,7 +4,7 @@
   "description": "Behavior driven test framework",
   "main": "source/machiatto.js",
   "scripts": {
-    "test": "node test/hypos.js"
+    "test": "node test/runner"
   },
   "repository": {
     "type": "git",

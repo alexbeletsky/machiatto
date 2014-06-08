@@ -4,8 +4,10 @@ var tree = require('./tree');
 function noop() {}
 var roots = {};
 
-function test(name, spec) {
+function test(fn, name, spec) {
 	return {
+		fn: fn,
+
 		title: name,
 
 		slow: function () {
@@ -65,7 +67,7 @@ function assertRunner(assert, suite, spec, skipped, only) {
 
 					var name = context.name + 'it should ' + assert.model.name;
 
-					run(context.data, assert, runner, test(name, spec));
+					run(context.data, assert, runner, test(assert.model.fn, name, spec));
 					runner.emit('test end');
 
 					callback(null);
