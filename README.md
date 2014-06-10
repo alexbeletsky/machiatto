@@ -32,7 +32,7 @@ var expect = require('expect.js');
 
 var spec = behaviour('hello world specs');
 
-spec('hello world behaviour')
+spec
 	.when('world is created', function (context) {
 		context.world = new World();
 	})
@@ -56,7 +56,7 @@ var expect = require('expect.js');
 
 var spec = behaviour('hello');
 
-spec('bye world behaviour')
+spec
 	.when('world is created')
 
 	.and('bye', function (context) {
@@ -82,11 +82,8 @@ var machiatto = require('machiatto');
 var spec = machiatto('/api/user specs');
 ```
 
-`spec()` is a function, by calling that function you start new `test` within given `suite`. It optionally takes brief description of the test,
-
 ```js
-spec('unauthorized call')
-	.when('call api without access token', function (context, done) {
+spec.when('call api without access token', function (context, done) {
 		request('/api/user', function (err, response, body) {
 			context.response = resp;
 			context.body = body;
@@ -100,8 +97,7 @@ spec('unauthorized call')
 `when()` expected to do one (and only one) action. If you need to extend context, there is `.and()` function for that,
 
 ```js
-spec('unauthorized call')
-	.when('call api without access token', function (context, done) {
+spec.when('call api without access token', function (context, done) {
 		request('/api/user', function (err, response, body) {
 			context.response = resp;
 			context.body = body;
@@ -117,8 +113,7 @@ spec('unauthorized call')
 The assert is expected to be done in `.should()` function. `.should()` is never async and takes only one parameter - `context`.
 
 ```js
-spec('unauthorized call')
-	.when('call api without access token', function (context, done) {
+spec.when('call api without access token', function (context, done) {
 		request('/api/user', function (err, response, body) {
 			context.response = resp;
 			context.body = body;
@@ -152,7 +147,7 @@ module.exports = spec;
 Once `.when()` or `.and()` function is called it's possible to reuse it's body within same suite by name.
 
 ```js
-spec('add item to collection')
+spec
 	.when('collection is created', function (context) {
 		context.collection = new Collection();
 	})
@@ -165,7 +160,7 @@ spec('add item to collection')
 		expect(context.collection).to.have.length(1);
 	});
 
-spec('remove item from collection')
+spec
 	.when('collection is created')
 
 	.and('item added')
@@ -184,7 +179,7 @@ spec('remove item from collection')
 It's possible to prevent and of `.when()`, `.and()` or `.should()` from execution, by prefix function name with `x` - `.xwhen()`, '.xand()' and `.xshould()`.
 
 ```js
-spec('remove item from collection')
+spec
 	.when('collection is created')
 
 	.and('item added')
@@ -204,7 +199,7 @@ spec('remove item from collection')
 You can manage execution flow of specs with `.skip()` and `.only()` functions.
 
 ```js
-spec('add item to collection')
+spec
 	.when('collection is created', function (context) {
 		context.collection = new Collection();
 	})
@@ -220,7 +215,7 @@ spec('add item to collection')
 	// only this spec will run
 	.only();
 
-spec('remove item from collection')
+spec
 	.when('collection is created')
 
 	.and('item added')
