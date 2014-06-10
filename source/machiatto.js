@@ -9,6 +9,7 @@ function machiatto(suite) {
 
 		return {
 			_name: suite,
+
 			_asserts: function() {
 				return suites.reduce(function(asserts, suite) {
 					asserts = asserts.concat(suite.asserts());
