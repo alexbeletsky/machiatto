@@ -6,15 +6,15 @@ var reporter = require('gulp-diff').reporter;
 var strip = require('gulp-strip-line');
 
 gulp.task('approve', function () {
-	gulp.src('./bin/machiatto')
-		.pipe(exec('<%= file.path %>', {pipeStdout: true}))
+	gulp.src('./test/runner.js')
+		.pipe(exec('node <%= file.path %>', {pipeStdout: true}))
 		.pipe(strip(/\(\d+ ms\)/))
 		.pipe(gulp.dest('./.approved'));
 });
 
 gulp.task('test', function (cb) {
-	gulp.src('./bin/machiatto')
-		.pipe(exec('<%= file.path %>', {pipeStdout: true}))
+	gulp.src('./test/runner.js')
+		.pipe(exec('node <%= file.path %>', {pipeStdout: true}))
 		.pipe(strip(/\(\d+ ms\)/))
 		.pipe(diff('./.approved'))
 		.pipe(reporter());
