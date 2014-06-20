@@ -65,12 +65,15 @@ function runner(options, callback) {
 
 		var suiteNames = Object.keys(grouped);
 		async.eachSeries(suiteNames, function (suiteName, callback) {
-			runner.emit('suite', {title: suiteName});
+			// TODO: {root: false} - for all cases, need to fixed..
+			var suite = {title: suiteName, root: false};
+			runner.suite = suite;
+
+			runner.emit('suite', suite);
 
 			var asserts = grouped[suiteName];
 			async.eachSeries(asserts, runAssert(runner, reporter), function (err) {
-				// TODO: {root: false} - for all cases, need to fixed..
-			runner.emit('suite end', {root: false});
+			runner.emit('suite end', suite);
 				callback(err);
 			});
 
