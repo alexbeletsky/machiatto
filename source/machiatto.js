@@ -12,10 +12,10 @@ function machiatto(suite) {
 
 			_asserts: function() {
 				return suites.reduce(function(asserts, suite) {
-					asserts = asserts.concat(suite.asserts());
-					return asserts;
+					return asserts.concat(suite.asserts());
 				}, []);
 			},
+
 			when: function(desc, fn) {
 				_.establish(desc, fn);
 				return this;

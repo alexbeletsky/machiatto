@@ -50,7 +50,7 @@ function prepareContext(path, callback) {
 	}
 }
 
-function assertRunner(assert, suite, spec, skipped, only) {
+function assertRunner(assert, suite, skipped, only) {
 	return {
 		suite: suite,
 
@@ -65,10 +65,7 @@ function assertRunner(assert, suite, spec, skipped, only) {
 						return callback(err);
 					}
 
-					var name = context.name + 'it should ' + assert.model.name;
-
-					run(context.data, assert, runner, test(assert.model.fn, name, spec));
-					runner.emit('test end');
+					run(context, assert, runner, suite);
 
 					callback(null);
 				});
@@ -78,24 +75,30 @@ function assertRunner(assert, suite, spec, skipped, only) {
 		}
 	};
 
-	function run(context, assert, runner, test) {
+	function run(context, assert, runner, suite) {
+		var name = context.name + 'it should ' + assert.model.name;
+		var running = test(assert.model.fn, name, suite);
+
 		assert.run = true;
 
 		if (assert.model.fn === noop || skipped) {
-			return runner.emit('pending', test);
+			return runner.emit('pending', running);
 		}
 
 		try {
-			assert.model.fn(context);
+			assert.model.fn(context.data);
 		} catch (err) {
-			return runner.emit('fail', test, err);
+			return runner.emit('fail', running, err);
 		}
 
-		return runner.emit('pass', test);
+		runner.emit('pass', running);
+		runner.emit('test end', running);
+
+		return running;
 	}
 }
 
-function context(suite, spec) {
+function context(suite) {
 	var asserts = [];
 	var root = tree();
 	var curr = null;
@@ -180,7 +183,7 @@ function context(suite, spec) {
 
 		asserts: function () {
 			return asserts.map(function (assert) {
-				return assertRunner(assert, suite, spec, skipped, only);
+				return assertRunner(assert, suite, skipped, only);
 			});
 		}
 	};
