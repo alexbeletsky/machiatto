@@ -5,7 +5,8 @@ var specs = [
 	['--reporter', 'dot'],
 	['--reporter', 'spec'],
 	['--reporter', 'doc'],
-	['--reporter', 'json']
+	['--reporter', 'json'],
+	['--reporter', 'list']
 ];
 
 var specRunner = function (option) {
