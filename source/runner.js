@@ -1,8 +1,9 @@
-var EventEmitter = require('events').EventEmitter;
 var path = require('path');
 
 var async = require('async');
 var glob = require('glob');
+
+var suite = require('./suite');
 
 function runner(options, callback) {
 	var files = options.files;
@@ -36,11 +37,13 @@ function runner(options, callback) {
 
 		var grouped = groupAssertsBySuite(asserts);
 
-		executeAsserts(grouped, callback);
+		async.eachSeries(grouped, function (suite, callback) {
+			suite.run(callback);
+		});
 	}
 
 	function groupAssertsBySuite(asserts) {
-		return asserts.reduce(function (asserts, assert) {
+		var grouped = asserts.reduce(function (asserts, assert) {
 			var suiteName = assert.suite;
 			var suiteAsserts = asserts[suiteName] || [];
 
@@ -49,14 +52,21 @@ function runner(options, callback) {
 
 			return asserts;
 		}, {});
+
+		var suites = Object.keys(grouped).map(function (suiteName) {
+			return suite(suiteName, grouped[suiteName]);
+		});
+
+		return suites;
 	}
 
-	function runAssert(runner, reporter) {
-		return function (assert, callback) {
-			assert.run(runner, callback);
-		};
-	}
+	// function runAssert(runner, reporter) {
+	// 	return function (assert, callback) {
+	// 		assert.run(runner, callback);
+	// 	};
+	// }
 
+	/*
 	function executeAsserts(grouped, callback) {
 		var runner = new EventEmitter();
 		var reporter = new Reporter(runner);
@@ -73,10 +83,9 @@ function runner(options, callback) {
 
 			var asserts = grouped[suiteName];
 			async.eachSeries(asserts, runAssert(runner, reporter), function (err) {
-			runner.emit('suite end', suite);
+				runner.emit('suite end', suite);
 				callback(err);
 			});
-
 		}, function (err) {
 			if (err) {
 				throw err;
@@ -87,6 +96,7 @@ function runner(options, callback) {
 			callback(err, reporter.stats);
 		});
 	}
+	*/
 }
 
 module.exports = runner;
