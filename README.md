@@ -125,7 +125,7 @@ spec.when('call api without access token', function (context, done) {
 		request.post('/api/user', body: {name: 'me'}, done);
 	})
 
-	.shound('respond with 401', function (context) {
+	.should('respond with 401', function (context) {
 		expect(context.response.statusCode).to.equal(401);
 	})
 
