@@ -35,6 +35,9 @@ function machiatto(suite) {
 						throw new Error('done() callback called multiple times');
 					}
 					isCalled = true;
+					if (fn === 'noop') {
+						return;
+					}
 					return fn(arguments);
 				});
 				return this;
