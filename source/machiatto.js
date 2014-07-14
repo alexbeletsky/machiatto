@@ -1,3 +1,5 @@
+"use strict";
+
 var context = require('./context');
 
 function machiatto(suite) {
@@ -27,7 +29,14 @@ function machiatto(suite) {
 			},
 
 			should: function(desc, fn) {
-				_.assert(desc, fn);
+				var isCalled = false;
+				_.assert(desc, function () {
+					if (isCalled) {
+						throw new Error('done() callback called multiple times');
+					}
+					isCalled = true;
+					return fn(arguments);
+				});
 				return this;
 			},
 
