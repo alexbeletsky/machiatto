@@ -1,6 +1,6 @@
 {
   "name": "machiatto",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Behavior driven test framework",
   "main": "source/machiatto.js",
   "scripts": {
