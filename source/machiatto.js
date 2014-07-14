@@ -38,7 +38,7 @@ function machiatto(suite) {
 					if (fn === 'noop') {
 						return;
 					}
-					return fn(arguments);
+					return fn.apply(this, arguments);
 				});
 				return this;
 			},
