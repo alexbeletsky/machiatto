@@ -41,5 +41,8 @@
     "gulp-exec": "~2.0.1",
     "gulp-diff": "~0.1.4",
     "gulp-strip-line": "0.0.1"
+  },
+  "bin": {
+    "machiatto": "./bin/machiatto.js"
   }
 }
