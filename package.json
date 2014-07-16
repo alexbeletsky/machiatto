@@ -1,6 +1,6 @@
 {
   "name": "machiatto",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Behavior driven test framework",
   "main": "source/machiatto.js",
   "scripts": {
@@ -43,6 +43,6 @@
     "gulp-strip-line": "0.0.1"
   },
   "bin": {
-    "machiatto": "./bin/machiatto.js"
+    "machiatto": "./bin/machiatto"
   }
 }
