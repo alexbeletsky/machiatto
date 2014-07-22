@@ -1,5 +1,3 @@
-"use strict";
-
 var context = require('./context');
 
 function machiatto(suite) {
@@ -8,7 +6,6 @@ function machiatto(suite) {
 	suites.push(_);
 
 	var _machiatto = function() {
-
 		return {
 			_name: suite,
 

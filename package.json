@@ -34,7 +34,8 @@
     "glob": "~4.0.0",
     "gulp": "~3.7.0",
     "debug": "*",
-    "jade": "~0.26.3"
+    "jade": "~0.26.3",
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "expect.js": "~0.3.1",

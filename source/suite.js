@@ -1,22 +1,13 @@
+var _ = require('underscore');
 var EventEmitter = require('events').EventEmitter;
-var async = require('async');
-
-function runAssert(runner) {
-	return function (assert, callback) {
-		assert.run(runner, callback);
-	};
-}
 
 function suite(title, asserts) {
-	return {
+	var _suite = {
 		title: title,
-		// FIXME
-		root: false,
-
-		run: function (callback) {
-			async.eachSeries(asserts, runAssert(this), callback);
-		}
+		asserts: asserts
 	};
+
+	return _.extend(_suite, new EventEmitter());
 }
 
 module.exports = suite;

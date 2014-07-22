@@ -5,10 +5,24 @@ var glob = require('glob');
 
 var suite = require('./suite');
 
+function suiteRunner(suite, options) {
+	this.reporter = new require('./reporters/' + options.reporter)(suite);
+
+	console.log(require('./reporters/' + options.reporter));
+
+	return {
+		run: function (callback) {
+			async.eachSeries(suite.asserts, function (assert, callback) {
+				assert.run(suite, callback);
+			}, callback);
+		}
+	};
+}
+
 function runner(options, callback) {
 	var files = options.files;
-	// TODO: allow to use custom reporter as mocha does..
-	var Reporter = require('./reporters/' + options.reporter);
+	// // TODO: allow to use custom reporter as mocha does..
+	// var Reporter = require('./reporters/' + options.reporter);
 
 	glob(files + '/*.spec.js', loadSuitesAndRun);
 
@@ -38,7 +52,7 @@ function runner(options, callback) {
 		var grouped = groupAssertsBySuite(asserts);
 
 		async.eachSeries(grouped, function (suite, callback) {
-			suite.run(callback);
+			suiteRunner(suite, options).run(callback);
 		});
 	}
 

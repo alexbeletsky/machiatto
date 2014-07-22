@@ -2,12 +2,12 @@ var fork = require('child_process').fork;
 var async = require('async');
 
 var specs = [
-	['--reporter', 'dot'],
-	['--reporter', 'spec'],
-	['--reporter', 'doc'],
-	['--reporter', 'json'],
-	['--reporter', 'list'],
-	['--reporter', 'markdown']
+	['--reporter', 'dot']
+	//['--reporter', 'spec']
+	// ['--reporter', 'doc'],
+	// ['--reporter', 'json'],
+	// ['--reporter', 'list'],
+	// ['--reporter', 'markdown']
 ];
 
 var specRunner = function (option) {
