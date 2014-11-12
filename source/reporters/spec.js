@@ -56,6 +56,7 @@ function Spec(runner) {
   });
 
   runner.on('pass', function(test){
+    test.title = test.title.split("should")[1];
     if ('fast' == test.speed) {
       var fmt = indent()
         + color('checkmark', '  ' + Base.symbols.ok)
