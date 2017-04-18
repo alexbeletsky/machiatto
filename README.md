@@ -251,4 +251,4 @@ MIT
 (c) 2014 alexander.beletsky@gmail.com
 
 [Machiatto]: https://github.com/alexanderbeletsky/machiatto/
-[Mocha]: http://visionmedia.github.io/mocha/
+[Mocha]: http://mochajs.org/
